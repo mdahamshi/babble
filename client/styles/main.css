@@ -71,6 +71,12 @@ nav {
     margin-left: 13px; 
     float: left;
 }
+.bab-SendMessage-form-button-img {
+    background-color: white;
+    width: 45px;
+    margin: 0;
+  
+}
 
 .bab-Main {
     top: 100px;
@@ -138,6 +144,25 @@ nav {
     -moz-box-shadow: none;
     box-shadow: none;
 }
+.bab-Tooltip {
+    position: relative;
+    display: inline-block;
+    /* border-bottom: 1px dotted black;  */
+}
+.bab-Tooltip .bab-Tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;     
+    position: absolute;
+    top: -5px;
+    right: 105%; 
+    z-index: 1;
+}
+
 
 @media only screen and (min-width : 320px) {
 
@@ -152,10 +177,14 @@ nav {
         float: left;
         
     }
+    .bab-Tooltip .bab-Tooltiptext {
+        visibility: hidden;
+    }
     /* **************************MESSAGE SECTION***************************** */
     .bab-MessagesSection {
         margin-left: 10px;
         margin-right: 10PX;
+        
         /* overflow: scroll; */
     }
     /* *************************SEND MESSAGE ******************************* */
@@ -165,8 +194,6 @@ nav {
     .bab-SendMessage {
         /* position: absolute; */
         position: absolute;
-        margin: 0;
-        
     }
     .bab-SendMessage-form {
         height: 100%;
@@ -176,7 +203,6 @@ nav {
     }
     .bab-SendMessage-form-button {
         margin-left: 20px;
-        top: 90%;
         background-color: white;
         border: none;
         -webkit-box-shadow: none;
@@ -202,12 +228,23 @@ nav {
         width: 36px;
         align-self: left;
         margin-right: 10px;
+        border-radius: 50%;
+    }
+    .bab-Message-delete {
+        float: right;
+        margin-left: 4px;
     }
     .bab-Message-div {
         border-radius: 10px;
         background-color: white;
         max-width: 675px;
-        padding: 6px 6px 6px 8px;
+        padding: 4px 6px 4px 6px;
+        border: 1px;
+        border-style: solid;
+        border-color: rgb(215, 215, 215);
+    }
+    .bab-Message-div:hover {
+        background-color: rgb(235, 237, 236);
     }
     .bab-Message-name {
         color: rgb(32, 39, 41);
@@ -258,8 +295,6 @@ nav {
 
 }
 @media only screen and (min-width : 638px) {
-
-  
     .bab-Nav {
         background-color: rgb(97, 210, 144);
         width: 17.96875%;
@@ -270,16 +305,26 @@ nav {
         display: block;
         visibility: visible;
     }
+    .bab-Tooltip:hover .bab-Tooltiptext {
+        visibility: visible;
+    }
     /* **************************MESSAGE SECTION *************************** */
     .bab-MessagesSection {
         margin-left: 24px;
         margin-right: 24PX;
         /* overflow: scroll; */
     }
+    .bab-Message-div {
+        min-width: 420px;
+    }
 
     /* *************************SEND MESSAGE ******************************* */
     .bab-SendMessage {
-        width: calc(100% - 8px);
+        width: calc(100% );
+        margin: 0;
+        border-top: 1px;
+        border-style: solid;
+        border-color: rgb(215, 215, 215);
     }
     .bab-SendMessage-form-button ,.bab-SendMessage-form-button-img,.bab-SendMessage{
         background-color: white;
