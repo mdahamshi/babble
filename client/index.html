@@ -10,30 +10,41 @@
 </head>
 <body>
     
-        <header class="bab-mainHeader">
-            <img src="./images/logo.png" aria-label="babble chat logo" alt="babble chat logo">
-            <h1 class="bab-semiHidden">Babble Talk freely.</h1>
+        <header id="bab-mainHeader" class="bab-MainHeader">
+            <img class="bab-MainHeader-img" src="./images/logo.png" aria-label="babble chat logo" alt="babble chat logo">
+            <h1 class="bab-u-semiHidden">Babble Talk freely.</h1>
         </header>
-        <nav>
+        <nav class="bab-Nav">
 
         </nav>
-        <main id="bab-main">
-            <header>
-                <h1 class="bab-u-marginLeft">Vegans</h1>
+        <main id="bab-main" class="Main">
+            <header id="bab-main-header" class="bab-Main-header">
+                <h1 class="bab-u-marginLeft Main-header-h1">Vegans</h1>
 
-                <dl>
-                    <dt><img src="images/msg.png" alt="Number Of Messages"></dt>
-                    <dd>5</dd>
+                <dl class="bab-Main-header-dl">
+                    <dt class="bab-Main-header-dl-dt"><img src="images/msg.png" alt="Number Of Messages"></dt>
+                    <dd class="bab-Main-header-dl-dd">5</dd>
 
-                    <dt><img src="images/users.png" alt="Number Of Users"></dt>
-                    <dd>3</dd>
+                    <dt class="bab-Main-header-dl-dt"><img src="images/users.png" alt="Number Of Users" ></dt>
+                    <dd class="bab-Main-header-dl-dd">3</dd>
 
                 </dl>
             </header>
-            <section id="bab-messagesSection" class="bab-u-marginLeft">
-                <ol>
+            <section id="bab-messagesSection" class="bab-u-marginLeft bab-MessagesSection">
+                <ol class="Main-section-ol">
                     <li>aa</li>
                 </ol>
+            </section>
+            <section id="bab-sendMessage" class="bab-SendMessage">
+                <form action="" class="bab-SendMessage-form ">
+                    <div class="Growable js-growable">
+                         <pre class="bab-Growable-pre"><span id="bab-sendMessage-span"></span><br></pre>
+                         <textarea name="" id="bab-sendMessage-textarea" cols="30" rows="1" class="bab-SendMessage-form-textarea bab-Growable-textarea"></textarea>
+                    </div>
+                    <button class="bab-SendMessage-form-button" aria-label="Send Button" type="button" onclick="">
+                        <img src="images/send.png" alt="Send Button" class="bab-SendMessage-form-button-img">
+                    </button>
+                </form>
             </section>
 
 
