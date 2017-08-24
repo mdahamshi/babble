@@ -1,5 +1,5 @@
 # Babble
-<a href="https://goo.gl/spcSMk">Babble</a> is an Simple Chat app.
+<a href="http://mdahamshi.casacam.net/babble/client">Babble</a> is an Simple Chat app.
 <p align="center">
 <img src="https://github.com/mdahamshi/babble/blob/master/ss/0.png"/>
 </p>
