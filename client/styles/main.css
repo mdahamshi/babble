@@ -72,36 +72,76 @@ nav {
     float: left;
 }
 
-.Main {
+.bab-Main {
     top: 100px;
-    position: fixed;
+    position: relative;
     background-color: rgb(246, 246, 246);
-    width: 100%;
-    height: calc(100% - 100px);
+    width: calc(100% );
+    margin-right: 8px;
+    height: calc(100% - 100px); /*116 = 100 (main header) + 16 margins*/
 }
-.Main-section-ol {
+.bab-Main-section-ol {
     list-style-type: none;
 }
 .bab-MessagesSection {
     /* TEMP */
-    background-color: rgb(140, 140, 255);
-    height: 50%;
+    /* background-color: rgb(140, 140, 255); */
+    background-color: rgb(246, 246, 246);
+    min-height: 100px;    
+    overflow: auto;
     
 }
 
 
 .bab-SendMessage {
-    width: 100%;
-    position: absolute;
+    width: calc(100% - 8px);
+    position: relative;
     bottom: 0;
+    min-width: 100px;
+    margin: 8px 0px 8px 8px;
     max-height: 300px;
     overflow: hidden;
 }
-
+.bab-Growable-textarea,
+.bab-Growable-pre {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 0.2em;
+    padding-left: 0.5em;
+    height: 100%;
+    min-height: 40px;
+    
+}
+.Growable {
+    position: relative;
+    border: none;
+    max-height: 100px;
+    width: calc(100%  - 100px);
+    overflow: hidden;
+}
+.bab-SendMessage-form-textarea {
+    width: 100%;
+    resize: none;
+    border: none;
+    border-radius: 10px;    
+    outline: none;
+    min-width: 100px;
+    position: absolute;
+    top: 0; left: 0;
+    overflow: visible;
+    height: 100%;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
 
 @media only screen and (min-width : 320px) {
 
-    .Main-header-h1 {
+    .bab-Main-header-h1 {
         font-size: 1.55em;
         color: rgb(41, 41, 41);
         font-family: 'Nunito';
@@ -112,9 +152,26 @@ nav {
         float: left;
         
     }
+    /* **************************MESSAGE SECTION***************************** */
+    .bab-MessagesSection {
+        margin-left: 10px;
+        margin-right: 10PX;
+        /* overflow: scroll; */
+    }
     /* *************************SEND MESSAGE ******************************* */
-
-
+    .Growable {
+        max-height: 300px;
+    }
+    .bab-SendMessage {
+        /* position: absolute; */
+        position: absolute;
+    }
+    .bab-SendMessage-form {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
     .bab-SendMessage-form-button {
         margin-left: 20px;
         top: 90%;
@@ -132,44 +189,38 @@ nav {
         margin: 0;
       
     }
-    .bab-Growable-textarea,
-    .bab-Growable-pre {
-        margin: 0;
-        box-sizing: border-box;
-        font-family: inherit;
-        font-size: inherit;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        padding: 1em;
+    .bab-Message {
+        display: flex;
+        /* margin-top: 8px; */
+        margin-bottom: 15px;
+        
         
     }
-    .Growable {
-        position: relative;
-        border: none;
-        max-height: 300px;
-        width: calc(100%  - 100px);
-        overflow: hidden;
+    .bab-Message-img {
+        width: 36px;
+        align-self: left;
+        margin-right: 10px;
     }
-    .bab-SendMessage-form-textarea {
-        width: 100%;
-        resize: none;
-        border: none;
-        outline: none;
-        min-width: 100px;
-        position: absolute;
-        top: 0; left: 0;
-        overflow: visible;
-        height: 100%;
-        /* height: 90px; */
-        padding: 1em;
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none;
+    .bab-Message-div {
+        border-radius: 10px;
+        background-color: white;
+        max-width: 675px;
+        padding: 6px 6px 6px 8px;
     }
-    .bab-SendMessage-form {
-        height: 100%;
-        display: flex;
-        align-items: center;
+    .bab-Message-name {
+        color: rgb(32, 39, 41);
+        font-weight: 700;
+    }
+    .bab-Message-time {
+        color: rgb(130, 130, 130);
+        font-size: 0.85em;
+        font-stretch: ultra-condensed;
+        font-weight: 100;
+        margin-left: 5px;
+        
+    }
+    .bab-Message-text {
+        color: rgb(80, 80, 80);
     }
     
     .bab-SendMessage-form-button{
@@ -184,9 +235,8 @@ nav {
         font-size: 15px;
     }
     .bab-Main-header {
-        background-color: rgb(200, 200, 200);
+        background-color: rgb(246, 246, 246);
         width: 100%;
-        min-height: 30px;
         height: 59px;;
     }
     .bab-Main-header-dl {
@@ -214,25 +264,32 @@ nav {
         height: 100%;
         left: 0;
         z-index: -1;
-        position: absolute;
+        position: fixed;
         display: block;
         visibility: visible;
     }
-
+    /* **************************MESSAGE SECTION *************************** */
+    .bab-MessagesSection {
+        margin-left: 24px;
+        margin-right: 24PX;
+        /* overflow: scroll; */
+    }
 
     /* *************************SEND MESSAGE ******************************* */
     .bab-SendMessage {
-        width: calc(82.03125% );
+        width: calc(100% - 8px);
     }
     .bab-SendMessage-form-button ,.bab-SendMessage-form-button-img,.bab-SendMessage{
         background-color: white;
     }
-    .bab-Main-header {
-        width: 82.03125%;
-    }
     body {
         font-size: 15px;
         padding-left: 17.96875%;
+    }
+
+    .bab-Growable-pre , .bab-SendMessage-form-textarea {
+        padding: 1em;
+        border-radius: 0;
     }
     .col-1 {
         width: 8.33%;

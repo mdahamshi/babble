@@ -1,4 +1,6 @@
 var Babble = {
+    $: document.querySelector.bind(document) ,
+    $$: document.querySelectorAll.bind(document) ,
     fixMargin: function(){
         // document.querySelector('.bab-mainHeader img ').style['margin-top'] = document.getElementsByClassName('bab-mainHeader')[0].clientHeight * 0.15 + 'px';
         // document.querySelector('main > header > h1').style['margin-top'] = document.querySelector('main > header').clientHeight * 0.372881356 + 'px';
@@ -21,7 +23,8 @@ var Babble = {
         var sendMessage = document.getElementById('bab-sendMessage');
         var main = document.getElementById('bab-main');
         var messageSection = document.getElementById('bab-messagesSection');
-        messageSection.style['height'] = main.clientHeight - (mainHeader.clientHeight + sendMessage.clientHeight) + 'px';
+        var goodHeight = Math.max(main.clientHeight - (mainHeader.clientHeight + sendMessage.clientHeight ), 100);
+        messageSection.style['height'] = goodHeight + 'px';
         
     }
 };
