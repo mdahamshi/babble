@@ -5,7 +5,7 @@
 </p>
 
 **Course Instructor**
-Serge Krul <a href="https://il.linkedin.com/in/sergekrul">*</a>
+Mr. Serge Krul <a href="https://il.linkedin.com/in/sergekrul">*</a>
 
 **Publication date:** TBD
 
