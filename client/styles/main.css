@@ -47,6 +47,7 @@ nav {
     visibility: hidden;
 }
 
+
 [class*="col-"] {
     float: left;
     padding: 15px;
@@ -341,6 +342,23 @@ nav {
     .bab-Growable-pre , .bab-SendMessage-form-textarea {
         padding: 0.5em;
         color: rgb(80, 80, 80);
+    }
+    .bab-u-style-4::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(200,200,200,0.3);
+        background-color: #F5F5F5;
+    }
+    
+    .bab-u-style-4::-webkit-scrollbar
+    {
+        width: 4px;
+        background-color: #F5F5F5;
+    }
+    
+    .bab-u-style-4::-webkit-scrollbar-thumb
+    {
+        background-color: rgba(200,200,200,0.3);
+        border: 2px solid rgba(200,200,200,0.3);
     }
     .col-1 {
         width: 8.33%;
