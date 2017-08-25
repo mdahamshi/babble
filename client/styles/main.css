@@ -159,7 +159,7 @@ nav {
     padding: 5px 0;
     border-radius: 6px;     
     position: absolute;
-    top: -5px;
+    top: -15px;
     right: 105%; 
     z-index: 1;
 }
@@ -227,6 +227,7 @@ nav {
         display: flex;
         /* margin-top: 8px; */
         margin-bottom: 15px;
+        margin-right: 8px;
         
         
     }
