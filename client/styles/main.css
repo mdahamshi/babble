@@ -100,11 +100,10 @@ nav {
 
 
 .bab-SendMessage {
-    width: calc(100% - 8px);
+    width: calc(100% );
     position: relative;
     bottom: 0;
     min-width: 100px;
-    margin: 8px 0px 8px 8px;
     max-height: 300px;
     overflow: hidden;
 }
@@ -194,12 +193,16 @@ nav {
     .bab-SendMessage {
         /* position: absolute; */
         position: absolute;
+        border-top: 1px;
+        border-style: solid;
+        border-color: rgb(215, 215, 215);
     }
     .bab-SendMessage-form {
         height: 100%;
         width: 100%;
         display: flex;
         align-items: center;
+        margin: 8px 0px 8px 8px;
     }
     .bab-SendMessage-form-button {
         margin-left: 20px;
@@ -322,9 +325,7 @@ nav {
     .bab-SendMessage {
         width: calc(100% );
         margin: 0;
-        border-top: 1px;
-        border-style: solid;
-        border-color: rgb(215, 215, 215);
+
     }
     .bab-SendMessage-form-button ,.bab-SendMessage-form-button-img,.bab-SendMessage{
         background-color: white;
