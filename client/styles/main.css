@@ -202,7 +202,7 @@ nav {
         width: 100%;
         display: flex;
         align-items: center;
-        margin: 8px 0px 8px 8px;
+        margin: 5px 0px 11px 8px;        
     }
     .bab-SendMessage-form-button {
         margin-left: 20px;
@@ -336,8 +336,9 @@ nav {
     }
 
     .bab-Growable-pre , .bab-SendMessage-form-textarea {
-        padding: 1em;
+        padding: 0.5em;
         border-radius: 0;
+        color: rgb(80, 80, 80);
     }
     .col-1 {
         width: 8.33%;
