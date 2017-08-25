@@ -79,16 +79,7 @@ nav {
   
 }
 
-.bab-Main {
-    top: 100px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    background-color: rgb(246, 246, 246);
-    width: calc(100% );
-    margin-right: 8px;
-    height: calc(100% - 100px); /*116 = 100 (main header) + 16 margins*/
-}
+
 .bab-Main-section-ol {
     list-style-type: none;
 }
@@ -163,10 +154,35 @@ nav {
     right: 105%; 
     z-index: 1;
 }
-
-
+.bab-u-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+.bab-u-flatButton {
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    padding: 10px;
+    font-size: 18px;
+    outline: none;
+    cursor: pointer;
+}
 @media only screen and (min-width : 320px) {
-
+    .bab-Main {
+        top: 100px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background-color: rgb(246, 246, 246);
+        width: calc(100% );
+        margin-right: 8px;
+        height: calc(100% - 100px); /*116 = 100 (main header) + 16 margins*/
+    }
     .bab-Main-header-h1 {
         font-size: 1.55em;
         color: rgb(41, 41, 41);
@@ -181,6 +197,78 @@ nav {
     .bab-Tooltip .bab-Tooltiptext {
         visibility: hidden;
     }
+    /* **************************Modal*************************************** */
+    .bab-Modal {
+        z-index: 10;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 50%;
+        /* height: 50%; */
+        height: 250px;
+        min-width: 340px;
+        /* max-width: 410px; */
+        display: flex;
+        flex-direction: column;
+        flex-grow: 0;
+        margin: auto;
+        font-size: 19px;
+        background-color: white;
+        /* padding: 20px; */
+    }
+ 
+    .bab-Modal-form {
+        padding: 30px;
+        display: block;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .bab-Modal-nameLabel {
+        flex-shrink: 0;
+        margin-right: 10px;
+    }
+    .bab-u-wrap {
+        width: 100%;
+        display: block;
+        margin: 20px 0 0 0;
+
+    }
+    .bab-Modal-nameInput {
+        float: right;
+        width: 60%;
+        padding: 8px;
+    }
+    .bab-Modal-emailLabel {
+        flex-shrink: 0;
+        margin-right: 10px;        
+    }
+    .bab-Modal-emailInput {
+        width: 60%;
+        padding: 8px;
+        float: right;
+
+    }
+    .bab-Modal-buttons {
+        display: block;
+        width: 100%;
+    }
+    .bab-Modal-cancel {
+        float: left;
+    }
+    .bab-Modal-submit {
+        background-color: greenyellow;
+        float: right;
+    }
+    .bab-Modal-header {
+        background-color: #353744;
+        /* margin: 4px; */
+        padding: 10px;
+        font-size: 24px;
+        color: white;
+    }
+
     /* **************************MESSAGE SECTION***************************** */
     .bab-MessagesSection {
         margin-left: 10px;
@@ -209,13 +297,13 @@ nav {
     }
     .bab-SendMessage-form-button {
         margin-left: 20px;
-        background-color: white;
         border: none;
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;
         outline: none;
         cursor: pointer;
+        background-color: white;
     }
     .bab-SendMessage-form-button-img {
         background-color: white;
