@@ -206,13 +206,10 @@ nav {
         right: 0;
         bottom: 0;
         width: 50%;
-        /* height: 50%; */
         height: 250px;
         min-width: 340px;
-        /* max-width: 410px; */
         display: flex;
         flex-direction: column;
-        flex-grow: 0;
         margin: auto;
         font-size: 19px;
         background-color: white;
@@ -264,7 +261,6 @@ nav {
     }
     .bab-Modal-header {
         background-color: #353744;
-        /* margin: 4px; */
         padding: 10px;
         font-size: 24px;
         color: white;

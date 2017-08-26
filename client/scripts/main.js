@@ -15,6 +15,12 @@ var Babble = {
         area.addEventListener('input', function(e) {
             clone.textContent = area.value;
         });
+    },
+    handleAnonymos: function handleAnonymos(){
+        document.getElementById('bab-modal-overlay')
+        .classList.add('bab-u-hidden');
+        document.getElementById('bab-modal')
+        .classList.add('bab-u-hidden');
     }
 };
 
