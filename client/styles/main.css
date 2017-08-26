@@ -249,6 +249,7 @@ nav {
         font-size: 15px;
         flex-grow: 1;
         margin-right: 6px;
+        width: 40px;
         outline: none;
         float: right;
     }
@@ -260,7 +261,7 @@ nav {
     }
     .bab-Modal-buttons {
         display: block;
-        margin-top: 19px;
+        margin-top: 8px;
         margin-left: auto;
         padding-right: 6px;
         float: right;
