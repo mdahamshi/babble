@@ -206,19 +206,18 @@ nav {
         z-index: 10;
         background-color: rgb(249, 249, 249);
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         max-width: 448px;
         width: 50%;
         height: 224px;
         min-width: 340px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         display: flex;
         flex-direction: column;
         margin: auto;
         font-size: 19px;
-        /* padding: 20px; */
     }
  
     .bab-Modal-form {
@@ -226,7 +225,6 @@ nav {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: space-between;
     }
 
     .bab-u-wrap {
@@ -251,10 +249,9 @@ nav {
         margin-right: 6px;
         width: 40px;
         outline: none;
-        float: right;
     }
     .bab-Modal-emailMargin {
-        margin-right: 34px;
+        margin-right: 36px;
     }
     .bab-Modal-nameMargin {
         margin-right: 8px;
@@ -264,7 +261,6 @@ nav {
         margin-top: 8px;
         margin-left: auto;
         padding-right: 6px;
-        float: right;
     }
     .bab-Modal-cancel {
         margin-right: 6px;
