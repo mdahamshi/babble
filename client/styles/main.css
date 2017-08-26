@@ -223,50 +223,58 @@ nav {
  
     .bab-Modal-form {
         padding: 0 26px 26px 26px;
-        display: block;
+        display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     .bab-u-wrap {
         width: 100%;
         display: block;
-        margin: 17px 0 0 0;
+        margin: 10px 0 0 0;
 
     }
 
     .bab-Modal-label {
         flex-shrink: 0;
+        margin-top: 6px;
         color: rgb(97, 97, 97);
         font-size: 15px;
     }
     .bab-Modal-input {
-        width: 60%;
         color: rgb(32, 39, 41);
         padding: 6px 6px 6px 8px;
         font-weight: 600;
         font-size: 15px;
+        flex-grow: 1;
         margin-right: 6px;
         outline: none;
         float: right;
-
+    }
+    .bab-Modal-emailMargin {
+        margin-right: 34px;
+    }
+    .bab-Modal-nameMargin {
+        margin-right: 8px;
     }
     .bab-Modal-buttons {
         display: block;
-        margin-top: 18px;
+        margin-top: 19px;
+        margin-left: auto;
         padding-right: 6px;
-        float: right
+        float: right;
     }
     .bab-Modal-cancel {
         margin-right: 6px;
-        padding: 4px 8px 4px 8px;
+        padding: 3px 8px 3px 8px;
         font-size: 15px;
         background: -webkit-linear-gradient(top, rgba(209,209,209,1) 0%, rgba(181,181,181,1) 100%);
     }
     .bab-Modal-submit {
         background: -webkit-linear-gradient(top, rgba(125,216,78,1) 0%, rgba(72,163,113,1) 100%);
         color: white;
-        padding: 4px 24px 4px 24px;
+        padding: 3px 24px 3px 24px;
         font-size: 15px;
     }
     .bab-Modal-header {
@@ -410,9 +418,7 @@ nav {
     .bab-Tooltip:hover .bab-Tooltiptext {
         visibility: visible;
     }
-    .bab-Modal-input {
-        width: 75%;
-    }
+
     /* **************************MESSAGE SECTION *************************** */
     .bab-MessagesSection {
         margin-left: 24px;
