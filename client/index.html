@@ -20,7 +20,7 @@
         </nav>
         <main id="bab-main" class="bab-Main">
             <header id="bab-main-header" class="bab-Main-header">
-                <h1 class="bab-u-marginLeft bab-Main-header-h1">Vegans</h1>
+                <h1 class="bab-Main-header-h1">Vegans</h1>
 
                 <dl class="bab-Main-header-dl">
                     <dt class="bab-Main-header-dl-dt"><img src="images/msg.png" alt="Number Of Messages"></dt>
@@ -32,7 +32,7 @@
                 </dl>
             </header>
             <section id="bab-messagesSection" class="bab-MessagesSection bab-u-style-4">
-                <ol class="bab-Main-section-ol">
+                <ol class="bab-MessagesSection-ol">
                         <li class="bab-Message">
                                 <img src="images/tmp.png" alt="" class="bab-Message-img">
                                 <div class="bab-Message-div">
@@ -114,7 +114,7 @@
             </section>
             <section id="bab-sendMessage" class="bab-SendMessage">
                 <form action="" class="bab-SendMessage-form ">
-                    <div class="Growable js-growable">
+                    <div class="bab-Growable js-growable">
                          <pre class="bab-Growable-pre"><span id="bab-sendMessage-span" ></span><br></pre>
                          <textarea name="" aria-label="type a message" placeholder="Babble a message !" id="bab-sendMessage-textarea" cols="30" rows="1" class="bab-SendMessage-form-textarea bab-Growable-textarea"></textarea>
                     </div>
@@ -128,7 +128,7 @@
         </main>
 
         <div id="bab-modal-overlay" class="bab-u-overlay "></div>
-        <div class="bab-Modal" id="bab-modal">
+        <div class="bab-Modal bab-u-hidden" id="bab-modal">
                 <header class="bab-Modal-header"> Who are you?</header>
             <form class="bab-Modal-form" action="#" method="POST">
                
@@ -148,7 +148,9 @@
                 </div>
             </form>
         </div>
-
+        <div class="bab-Loading" id="bab-loading">
+            <img src="images/loading.gif" class="bab-Loading-img" alt="loading the app"/>
+        </div>
     
 </body>
 </html>
