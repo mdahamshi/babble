@@ -76,7 +76,20 @@ nav {
   
 }
 
-
+.bab-InfoBar {
+    font-size: 18px;
+    text-align: center;
+    background-color: green;
+    padding: 6px;
+    height: 45px;
+    margin: 6px;
+    border-radius: 2px;
+}
+.bab-InfoBar-header {
+    font-size: 20px;
+    font-weight: 700;
+    margin-right: 4px;
+}
 .bab-MessagesSection-ol {
     list-style-type: none;
 }
@@ -359,7 +372,7 @@ nav {
     .bab-Message-div {
         border-radius: 10px;
         background-color: white;
-        max-width: 675px;
+        max-width: 600px;
         padding: 4px 6px 4px 6px;
         border: 1px;
         border-style: solid;
