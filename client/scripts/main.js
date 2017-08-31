@@ -368,8 +368,7 @@ var Babble = {
 
 
 window.onload = function(){
-    
-    Babble.delay(Babble.init, 1000);
+    Babble.init()
 }
 window.onresize = function(){
     Babble.scrollMessageSection();
