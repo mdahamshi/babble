@@ -69,6 +69,8 @@ var Babble = {
         }).then(callback);
     },
     sendMessage(){
+        if(this.currentMessage == "")
+            return;
         this.logData("sent")
     },
     resetMessage(){
@@ -100,55 +102,7 @@ var Babble = {
     notNumber(val){
         return (isNaN(val) || val < 0 || val ==='');
     },
-    animate(elem, type){
-        var padding =  window.getComputedStyle(elem)['padding'].replace('px',''), height = window.getComputedStyle(elem)['height'].replace('px','');
-        if(this.notNumber(height) || this.notNumber(padding)){
-            elem.classList.remove('bab-u-hidden');
-            this.logData('cannot animate: ',elem);
-            return; 
-        }
-        if(elem.style.height === "" || elem.style.height == 'auto'){
-            elem.style.height = height + 'px';
-            elem.style.padding = padding + 'px';
-          
-        }
-        var tempPadding, tempHeight, frame;
-        if(type == 'hide'){
-            tempPadding = padding;
-            tempHeight = height;
-            frame = function() {
-                if (tempHeight <= 0) {
-                    clearInterval(id);
-                    elem.classList.add('bab-u-hidden');
-                    elem.style.height = height + 'px';
-                    elem.style.padding = padding + 'px';
-                    this.showingInfo = false;
-                } else {
-                    elem.style.height = --tempHeight + 'px';
-                    if(tempPadding > 0)
-                        elem.style.padding = --tempPadding + 'px';
-                    
-                }
-            }
-        }
-        else {
-            elem.style.padding = elem.style.height  = tempHeight = 0;
-            tempPadding = 0;
-            elem.classList.remove('bab-u-hidden');
-            frame = function() {
-                if (tempHeight >= height) {
-                    clearInterval(id);
-                } else {
-                    elem.style.height = ++tempHeight + 'px';
-                    if(tempPadding != padding)
-                        elem.style.padding = ++tempPadding + 'px';
-                    
-                }
-            }
-        }
-        var id = setInterval(frame.bind(this), 5);
     
-    },
     showInfo(head, text,type = 'info', time=4000){
         if(this.showingInfo)
             return;
@@ -158,12 +112,24 @@ var Babble = {
         var bar = document.getElementById('bab-infoBar');
         bar.style.backgroundColor = this.alert[type].back;
         bar.style.color = this.alert[type].color;
+        bar.classList.remove('bab-u-hidden');
+       
 
-        this.animate(bar, 'show');
-        var hide = function(){return this.animate(bar, 'hide')};
-        if(time < 1000)
-            time = 1000; //don't allow hide show at same time;
+        var show = () => {
+            bar.style.padding = '6px';
+            bar.style.height = bar.scrollHeight + 12 + 'px';
+        };
+        var hide = () => {
+            bar.style.padding = '0px';
+            bar.style.height = 0;
+            this.showingInfo = false;
+        };
+        var classHidden = () => {
+            bar.classList.add('bab-u-hidden');
+        }
+        this.delay(show, 300);
         this.delay(hide, time);
+        this.delay(classHidden, time + 1000);
         
     },
     postMessageWrap(text, callback){
@@ -171,7 +137,7 @@ var Babble = {
             name: this.getName(),
             email: this.userInfo.email,
             message: this.currentMessage,
-            timestamp: new Date().getTime()
+            timestamp: Date.now()
         },callback);
     },
     formToRegister(){
@@ -197,8 +163,10 @@ var Babble = {
             if(options.data)
                 data = JSON.stringify({data:options.data});
             console.log(options.url || Babble.apiUrl)
-            xhr.open(options.method, (options.url || Babble.apiUrl) + options.path, true);
-            xhr.timeout = 60000;
+            xhr.open(options.method, (options.url || Babble.apiUrl) + options.path,
+                                 options.async === undefined ? true : options.async);
+            if(options.async !== false)
+                xhr.timeout = 60000;
             xhr.setRequestHeader('Content-type', options.content || 'application/json; charset=utf-8');        
             xhr.onerror = function(){
                 reject({
@@ -315,6 +283,14 @@ var Babble = {
     formatDate(date){
         return date.getHours() + ':' + date.getMinutes();
     },
+    logOut(){
+        // this.sendRequest({
+        //     method: 'POST',
+        //     path: this.urls.messages,
+        //     async: false
+        // }).then(this.logData);
+        console.log(this.urls);
+    },
     appendMessage(message, id){
         //extracting data from message
         var name = message.name || 'Anonymous', email = message.email, 
@@ -376,4 +352,9 @@ window.onresize = function(){
 
 document.onclick = function(evt){
     console.log(evt.clientX + ',',evt.clientY);
+}
+
+window.onbeforeunload = function(){
+    Babble.logOut();
+    // return msg;
 }

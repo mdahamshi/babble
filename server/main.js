@@ -52,6 +52,7 @@ app.post('/messages', function(req, res){
     console.log(req.body.data);
     // res.end(JSON.stringify({id:babble.id++}));
     req.on('close', () => {console.log("disconnect ",req.body.data.name)});
+    res.end();
 
     // console.log(data);
 });

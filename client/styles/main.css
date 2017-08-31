@@ -77,13 +77,13 @@ nav {
 }
 
 .bab-InfoBar {
-    font-size: 18px;
+    font-size: 16px;
+    word-wrap: break-word;
     text-align: center;
-    background-color: green;
-    padding: 6px;
-    height: 45px;
-    margin: 6px;
     border-radius: 2px;
+    height: 0px;
+    overflow: hidden;
+    transition: all 1000ms;
 }
 .bab-InfoBar-header {
     font-size: 20px;
