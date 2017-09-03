@@ -28,10 +28,10 @@
 
                 <dl class="bab-Main-header-dl">
                     <dt class="bab-Main-header-dl-dt"><img src="images/msg.png" alt="Number Of Messages"></dt>
-                    <dd class="bab-Main-header-dl-dd">0</dd>
+                    <dd id="bab-messageCount" class="bab-Main-header-dl-dd">0</dd>
 
                     <dt class="bab-Main-header-dl-dt"><img src="images/users.png" alt="Number Of Users" ></dt>
-                    <dd class="bab-Main-header-dl-dd">0</dd>
+                    <dd id="bab-userCount" class="bab-Main-header-dl-dd">0</dd>
 
                 </dl>
             </header>
@@ -56,24 +56,24 @@
 
         </main>
 
-        <div id="bab-modal-overlay" class="bab-u-overlay "></div>
+        <div id="bab-modal-overlay" class="bab-u-overlay bab-u-hidden"></div>
         <div class="bab-Modal bab-u-hidden" id="bab-modal">
                 <header class="bab-Modal-header"> Who are you?</header>
             <form id="bab-registerForm" class="bab-Modal-form" action="#" method="POST" autocomplete="on">
                
                 <label for="modal-name" class="bab-Modal-nameMargin bab-Modal-label">Full name: </label>
-                <input id="modal-name" class="bab-u-roundBorder bab-Modal-input" type="text" />
+                <input id="modal-name" name="modalName" class="bab-u-roundBorder bab-Modal-input" type="text" />
                
                 <span class="bab-u-wrap"></span>
                
                 <label for="modal-email" class="bab-Modal-emailMargin bab-Modal-label">Email: </label>
-                <input id="modal-email" class="bab-u-roundBorder bab-Modal-input" type="email" />
+                <input id="modal-email" name="modalEmail" class="bab-u-roundBorder bab-Modal-input" type="email" />
 
                 <span class="bab-u-wrap"></span>
 
                 <div class="bab-Modal-buttons">
-                    <button class="bab-Modal-cancel bab-u-flatButton"  type="reset" onclick="Babble.handleAnonymos()">Stay Anonymous</button>
-                    <button  id="bab-modal-submit" class="bab-Modal-submit bab-u-flatButton" type="button" onclick="Babble.formToRegister()">Save</button>
+                    <button class="bab-Modal-cancel bab-u-flatButton"  type="button" onclick="Babble.register({name: '', email: ''},'anonymous')">Stay Anonymous</button>
+                    <button  id="bab-modal-submit" class="bab-Modal-submit bab-u-flatButton" type="button" onclick="Babble.register({name:Babble.$('#modal-name').value, email:Babble.$('#modal-email').value })">Save</button>
                 </div>
             </form>
         </div>

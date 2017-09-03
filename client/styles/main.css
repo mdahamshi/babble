@@ -78,6 +78,7 @@ nav {
 
 .bab-InfoBar {
     font-size: 16px;
+    z-index: 20;
     word-wrap: break-word;
     text-align: center;
     border-radius: 2px;
@@ -370,12 +371,13 @@ nav {
     }
     .bab-Message-div {
         border-radius: 10px;
-        background-color: white;
+        background-color: #dff0d8;
         max-width: 600px;
         padding: 4px 6px 4px 6px;
         border: 1px;
         border-style: solid;
         border-color: rgb(215, 215, 215);
+        transition: all 1000ms;
     }
     .bab-Message-div:hover {
         background-color: rgb(235, 237, 236);

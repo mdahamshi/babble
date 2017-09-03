@@ -9,15 +9,20 @@ var Babble = {
     urls: {
         messages: '/messages',
         stats: '/stats',
+        signin: '/user',
+        logout: '/logout',
+        getMessages: '/messages?counter=',
         anonymousImage: 'images/null.png',
 
     },
     sentMessages: new Array(),
     currentMessage: "",
     counter: 0,
+    timeout: 10000,
     apiUrl: 'http://localhost:9000',
     lastSentMessage: null,
     showingInfo: false,
+    registered: false,
     alert: {
         success: {color: "#3c763d", back: "#dff0d8"},
         info: {color: "#4673a2", back: "#d9edf7"},
@@ -26,33 +31,59 @@ var Babble = {
 
     // **************************** Requiered API*****************************************
     
-    register(userInfo){
-        this.userInfo = userInfo;
-        var data = {currentMessage: "",userInfo: userInfo};
-        if (Storage && (localStorage.getItem('babble') === null )){
-            this.updateLocalStorage(userInfo.name, userInfo.email, "");
-        }
-        this.resetMessage();
-        this.showInfo("Hello ","Hello and Welcome to Babble "+ this.getName() + " !","success");
+    register(userInfo, type){
+        if(type !== 'anonymous'){
+            if(! this.validateRegister(userInfo.name, userInfo.email)){
+                this.logData("Wrong email or name");
+                this.showInfo("Error !","Wrong Full Name/Email.","error");
+                return;
+            }
+            this.registered = true;
 
+        }
+
+        this.userInfo = userInfo;
+        this.signIn(function (data) {
+            this.hideModal();
+            this.id = data.id;
+            if(this.registered)
+                this.updateLocalStorage();
+            this.getMessages(0);
+        }.bind(this));
+        
+        
+        this.showInfo("Hello ","Hello and Welcome to Babble "+ this.getName() + " !","success");
     },
     sentByMe(id){
         return this.sentMessages.indexOf(id) !== -1;
     },
-    getMessages(counter, callback){
+    logIn(){
+
+    },
+    getMessages(counter = this.counter, callback = this.getMessagesResponse.bind(this)){
         if(counter < 0 ){
             this.logData("Erorr, counter should be >= 0");
             return;
         }
         this.sendRequest({
             method: 'GET',
-            path: this.urls.messages+'?counter=' + counter
+            path: this.urls.getMessages + counter
         }).then(callback);
     },
-    
+    getMessagesResponse(data){
+        if(! data)
+            return;
+        // if(this.counter !== 0 )
+        //     this.showInfo('New ! ',"got new "+ 
+        // (data.counter - this.counter == 1 ? 'message':(data.counter - this.counter) + ' messages'),
+        //     'success' , 1000);
+        this.counter = data.counter;
+        data.messages.forEach(function (msg) {
+            this.appendMessage(msg.message, msg.id);
+        }.bind(this));
+    },
     postMessage(message, callback = this.postMessageResponse.bind(this)){
-        lastSentMessage = message;
-        if(message.message == "")
+        if(message.message.trim() == "")
             return;
         this.sendRequest({
             method: 'POST',
@@ -60,8 +91,14 @@ var Babble = {
             data: message
         }).then(callback);
     },
-    
-    deleteMessage(id, callback){
+    signIn(callback  = this.logData){
+        this.sendRequest({
+            method: 'POST',
+            path: this.urls.signin,
+            data: this.userInfo,
+        }).then(callback);
+    },
+    deleteMessage(id, callback  = this.logData){
         this.sendRequest({
             method: 'DELETE',
             path: this.urls.messages + '/' + id,
@@ -71,29 +108,42 @@ var Babble = {
     sendMessage(){
         if(this.currentMessage == "")
             return;
-        this.logData("sent")
+        this.postMessageWrap()
     },
     resetMessage(){
-        document.getElementById('bab-sendMessage-textarea').textContent = "";
-        document.getElementById('bab-sendMessage-span').textContent = "";
+        document.getElementById('bab-sendMessage-textarea').value = "";
+        document.getElementById('bab-sendMessage-span').value = "";
         this.currentMessage = "";
-        this.updateLocalStorage();
     },
-    getStats(callback){
+    getStats(callback  = this.getStatsResponse.bind(this)){
         this.sendRequest({
             method: 'GET',
+            header:[this.userCount,this.messageCount],
             path: this.urls.stats,
         }).then(callback);
     },
+    getStatsResponse(data){
+        if(! data)
+            return;
+        this.userCount = data.users;
+        this.messageCount = data.messages;
+        this.$('#bab-messageCount').innerHTML = data.messages;
+        this.$('#bab-userCount').innerHTML = data.users;
+    },
     logData(data){
+
         console.log(data);
     },
     getName(){
         return this.userInfo.name || "Anonymous";
     },
     postMessageResponse(data){
-        this.sentMessages.push(data.id);
-        this.appendMessage(lastSentMessage, data.id);
+        if(! data)
+            return;
+        if(this.registered)
+            this.sentMessages.push(data.id);
+        this.resetMessage();
+        // this.appendMessage(lastSentMessage, data.id);
     },
     getImageUrl(){
 
@@ -132,7 +182,9 @@ var Babble = {
         this.delay(classHidden, time + 1000);
         
     },
-    postMessageWrap(text, callback){
+    postMessageWrap(callback, text){
+        if(this.currentMessage.trim() == "")
+            return;
         this.postMessage({
             name: this.getName(),
             email: this.userInfo.email,
@@ -140,23 +192,17 @@ var Babble = {
             timestamp: Date.now()
         },callback);
     },
-    formToRegister(){
-        var email = document.getElementById('modal-email').value,
-            name = document.getElementById('modal-name').value;
-        if(! this.validateRegister(name, email)){
-            this.logData("Wrong email or name");
-            return;
-        }
-            
-        this.hideModal();
-        this.register({name: name, email: email});
-    },
+
     validateRegister(name, email){
         email = email.trim();
         name = name.trim();
         return (/^[a-zA-Z]+\s+[a-zA-Z]+$/.test(name) && /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email));
     },
 
+    showLoading(){
+
+            document.getElementById('bab-loading').classList.remove('bab-u-hidden');
+    },
     sendRequest(options){
         return new Promise(function (resolve, reject) {
             var xhr = new XMLHttpRequest(), data = null;
@@ -166,8 +212,14 @@ var Babble = {
             xhr.open(options.method, (options.url || Babble.apiUrl) + options.path,
                                  options.async === undefined ? true : options.async);
             if(options.async !== false)
-                xhr.timeout = 60000;
+                xhr.timeout = Babble.timeout;
             xhr.setRequestHeader('Content-type', options.content || 'application/json; charset=utf-8');        
+            if(Babble.id)
+                xhr.setRequestHeader('sender', Babble.id);
+            if(options.path === Babble.urls.stats){
+                xhr.setRequestHeader('users', options.header[0]);
+                xhr.setRequestHeader('messages', options.header[1]);
+            }
             xhr.onerror = function(){
                 reject({
                     status: this.status,
@@ -187,31 +239,36 @@ var Babble = {
             
         }).catch(this.logData);
     },
+
     init(){
 
         if (Storage && (localStorage.getItem('babble') === null)){
-            var modal = this.$('#bab-modal'),
-            overlay = this.$('#bab-modal-overlay');
-            modal.classList.remove('bab-u-hidden');
-            
-        }
-        else if (Storage && JSON.parse(localStorage.getItem('babble')).userInfo.name === ""){
-            this.localStorage = JSON.parse(localStorage.getItem('babble'));
-            this.currentMessage = this.localStorage.currentMessage;
-            var modal = this.$('#bab-modal'),
-            overlay = this.$('#bab-modal-overlay');
-            modal.classList.remove('bab-u-hidden');
+            this.showModal();
         }
         else {
-            this.localStorage = JSON.parse(localStorage.getItem('babble'));
-            this.userInfo = this.localStorage.userInfo;
-            this.currentMessage = localStorage.currentMessage;
-            this.hideModal();
+            this.loadLocalStorage();
+            this.signIn(function (data) {          
+                this.id = data.id;
+                this.sentMessages = data.byMe;
+                this.getMessages(0);
+            }.bind(this));
+            this.showInfo("Hello ","Hello again "+ this.getName() + ", enjoy the babbles  !","success");
         }
         this.hideLoading();
         this.makeGrowable(document.querySelector('.js-growable'));
         this.messageList = document.querySelector('#bab-messageList');
+        this.initEvents();
+    },
+    
+    loadLocalStorage(){
+        this.localStorage = JSON.parse(localStorage.getItem('babble'));
+        this.userInfo = this.localStorage.userInfo;
+        this.currentMessage = this.localStorage.currentMessage;
+        // this.sentMessages = this.localStorage.sentMessages;
+        this.registered = true;
+    },
 
+    initEvents(){
         document.getElementById("modal-email")
         .addEventListener("keyup", function(event) {
         event.preventDefault();
@@ -234,14 +291,15 @@ var Babble = {
                 document.getElementById("bab-sendMessageButton").click();
             }
             });
-
-        
     },
+
     unRegister(){
         localStorage.removeItem('babble');
+        this.registered = false;
     },
     delay(callback, time = 4000){
         setTimeout(callback.bind(Babble), time);
+        
     },
     
     hideLoading(){
@@ -254,7 +312,12 @@ var Babble = {
         document.getElementById('bab-modal')
         .classList.add('bab-u-hidden');
     },
-
+    showModal(){
+        document.getElementById('bab-modal-overlay')
+        .classList.remove('bab-u-hidden');
+        document.getElementById('bab-modal')
+        .classList.remove('bab-u-hidden');
+    },
     makeGrowable(container) {
         var area = container.querySelector('textarea');
         var clone = container.querySelector('span');
@@ -265,15 +328,15 @@ var Babble = {
         area.addEventListener('input', function(e) {
             clone.textContent = area.value;
             this.currentMessage = area.value;
-            if(this.userInfo && this.userInfo.email !== "")
-                this.updateLocalStorage();
             this.scrollMessageSection();
         }.bind(this));
         
     },
-    updateLocalStorage(name = this.userInfo.name, email = this.userInfo.email, message = this.currentMessage){
-        localStorage.setItem('babble', JSON.stringify({userInfo: {name: name, email: email}, currentMessage: message}));
-        this.localStorage = {userInfo: {name: name, email: email}, currentMessage: message};
+    updateLocalStorage(){
+        if(this.registered === false)
+            return;
+        localStorage.setItem('babble', JSON.stringify({userInfo: this.userInfo,
+             currentMessage: this.currentMessage}));
     },
 
     scrollMessageSection(){
@@ -281,14 +344,20 @@ var Babble = {
         messageSection.scrollTop = messageSection.scrollHeight;
     },
     formatDate(date){
-        return date.getHours() + ':' + date.getMinutes();
+        var hours = date.getHours(), minutes = date.getMinutes();
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        return hours + ':' + minutes;
     },
     logOut(){
-        // this.sendRequest({
-        //     method: 'POST',
-        //     path: this.urls.messages,
-        //     async: false
-        // }).then(this.logData);
+        if(! this.id)
+            return;
+        this.sendRequest({
+            method: 'DELETE',
+            path: this.urls.logout +  '/' + this.id,
+            async: false
+        }).then(this.logData);
+
         console.log(this.urls);
     },
     appendMessage(message, id){
@@ -296,10 +365,10 @@ var Babble = {
         var name = message.name || 'Anonymous', email = message.email, 
         text = message.message, 
         time = this.formatDate(new Date(message.timestamp)) ,
-        image = 'images/null.png';
+        image = this.urls.anonymousImage;
         
-        if(email != '')
-            image = this.getImageUrl(email);
+        if(message.image)
+            image = message.image;
 
         var toAppend = `
             
@@ -324,10 +393,19 @@ var Babble = {
            `
         
         var li = document.createElement('li');
+        
         li.classList.add('bab-Message');
+        li.classList.add('bab-u-hidden');
+        setTimeout(function(){
+            li.classList.remove('bab-u-hidden');
+        },300);
+ 
         li.innerHTML = toAppend;
         this.messageList['message-' + id] = li;
-
+        var div = li.querySelector('.bab-Message-div');
+        setTimeout(function(){
+            div.style.backgroundColor = 'white';
+        },1000);
         this.messageList.appendChild(li);
         this.scrollMessageSection();
     },
@@ -335,10 +413,7 @@ var Babble = {
 
 
     },
-    handleAnonymos(){
-        this.register({name:"",email: ""});
-        this.hideModal();
-    }
+
     
 };
 
@@ -355,6 +430,8 @@ document.onclick = function(evt){
 }
 
 window.onbeforeunload = function(){
+    if(Babble.registered)
+        Babble.updateLocalStorage();
     Babble.logOut();
     // return msg;
 }
