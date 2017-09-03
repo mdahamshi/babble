@@ -105,6 +105,8 @@ app.get('/messages', function(req, res){
     }
     if(counter != babble.getMessagesCount()){
         var data = {messages: babble.messages.slice(counter), counter: babble.getMessagesCount()};
+        babble.messageRequests[req.headers.sender] = res;
+        app.emit('ReqServed', req.headers.sender)
         app.success(data, res);
     }else{
         babble.messageRequests[req.headers.sender] = res;

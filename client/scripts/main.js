@@ -49,6 +49,7 @@ var Babble = {
             if(this.registered)
                 this.updateLocalStorage();
             this.getMessages(0);
+            this.getStats();
         }.bind(this));
         
         
@@ -251,6 +252,7 @@ var Babble = {
                 this.id = data.id;
                 this.sentMessages = data.byMe;
                 this.getMessages(0);
+                this.getStats();
             }.bind(this));
             this.showInfo("Hello ","Hello again "+ this.getName() + ", enjoy the babbles  !","success");
         }
