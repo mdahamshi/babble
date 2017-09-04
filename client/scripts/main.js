@@ -427,10 +427,7 @@ var Babble = {
         var li = document.createElement('li');
         li.setAttribute('message', id)
         li.classList.add('bab-Message');
-        li.classList.add('bab-u-hidden');
-        setTimeout(function(){
-            li.classList.remove('bab-u-hidden');
-        },300);
+
         
         li.innerHTML = toAppend;
         this.messageList['message-' + id] = li;
