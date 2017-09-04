@@ -19,6 +19,7 @@ var Babble = {
     currentMessage: "",
     counter: 0,
     timeout: 10000,
+    statsTimout: 13000,
     apiUrl: 'http://localhost:9000',
     lastSentMessage: null,
     showingInfo: false,
@@ -46,6 +47,7 @@ var Babble = {
         this.signIn(function (data) {
             this.hideModal();
             this.id = data.id;
+            this.sentMessages = data.byMe;
             if(this.registered)
                 this.updateLocalStorage();
             this.getMessages(0);
@@ -56,6 +58,9 @@ var Babble = {
         this.showInfo("Hello ","Hello and Welcome to Babble "+ this.getName() + " !","success");
     },
     sentByMe(id){
+        if(isNaN(id))
+            id = id.replace('message-','');
+        id = parseInt(id);
         return this.sentMessages.indexOf(id) !== -1;
     },
     logIn(){
@@ -74,6 +79,12 @@ var Babble = {
     getMessagesResponse(data){
         if(! data)
             return;
+        if(data.type == 'remove'){
+            this.removeMessage(data.id);
+            this.counter--;
+            this.getMessages();
+            return;
+        }
         // if(this.counter !== 0 )
         //     this.showInfo('New ! ',"got new "+ 
         // (data.counter - this.counter == 1 ? 'message':(data.counter - this.counter) + ' messages'),
@@ -82,6 +93,7 @@ var Babble = {
         data.messages.forEach(function (msg) {
             this.appendMessage(msg.message, msg.id);
         }.bind(this));
+        this.getMessages();
     },
     postMessage(message, callback = this.postMessageResponse.bind(this)){
         if(message.message.trim() == "")
@@ -99,12 +111,15 @@ var Babble = {
             data: this.userInfo,
         }).then(callback);
     },
-    deleteMessage(id, callback  = this.logData){
+    deleteMessage(id, callback  = this.deleteMessageResponse.bind(this)){
         this.sendRequest({
             method: 'DELETE',
             path: this.urls.messages + '/' + id,
             data: {name: this.getName(), email: this.userInfo.email},
         }).then(callback);
+    },
+    deleteMessageResponse(data){
+        console.log(data);
     },
     sendMessage(){
         if(this.currentMessage == "")
@@ -121,6 +136,7 @@ var Babble = {
             method: 'GET',
             header:[this.userCount,this.messageCount],
             path: this.urls.stats,
+            timeout: this.statsTimout,
         }).then(callback);
     },
     getStatsResponse(data){
@@ -130,6 +146,7 @@ var Babble = {
         this.messageCount = data.messages;
         this.$('#bab-messageCount').innerHTML = data.messages;
         this.$('#bab-userCount').innerHTML = data.users;
+        this.getStats();
     },
     logData(data){
 
@@ -141,8 +158,8 @@ var Babble = {
     postMessageResponse(data){
         if(! data)
             return;
-        if(this.registered)
-            this.sentMessages.push(data.id);
+        
+        this.sentMessages.push(parseInt(data.id));
         this.resetMessage();
         // this.appendMessage(lastSentMessage, data.id);
     },
@@ -213,7 +230,7 @@ var Babble = {
             xhr.open(options.method, (options.url || Babble.apiUrl) + options.path,
                                  options.async === undefined ? true : options.async);
             if(options.async !== false)
-                xhr.timeout = Babble.timeout;
+                xhr.timeout = options.timeout ||  Babble.timeout;
             xhr.setRequestHeader('Content-type', options.content || 'application/json; charset=utf-8');        
             if(Babble.id)
                 xhr.setRequestHeader('sender', Babble.id);
@@ -221,12 +238,25 @@ var Babble = {
                 xhr.setRequestHeader('users', options.header[0]);
                 xhr.setRequestHeader('messages', options.header[1]);
             }
+            if(options.path == Babble.urls.getMessages + Babble.counter){
+                console.log('in message rout')
+                xhr.addEventListener('timeout', function(){
+                    console.log('getmessage timeout')
+                    Babble.getMessages();
+                });
+            }else if(options.path == Babble.urls.stats){
+                xhr.addEventListener('timeout', function(){
+                    console.log('getstats timeout');
+                    Babble.getStats();
+                });
+            }
+          
             xhr.onerror = function(){
                 reject({
                     status: this.status,
                     statusText: xhr.statusText
                 });
-            };            
+            };    
             xhr.onload = function() {
                 if(this.status >=200 && this.status < 300)
                     resolve(options.content ? xhr.response : JSON.parse(xhr.response));
@@ -254,7 +284,7 @@ var Babble = {
                 this.getMessages(0);
                 this.getStats();
             }.bind(this));
-            this.showInfo("Hello ","Hello again "+ this.getName() + ", enjoy the babbles  !","success");
+            this.showInfo("Hello ","Welcome back "+ this.getName() + ", enjoy the babbles  !","success");
         }
         this.hideLoading();
         this.makeGrowable(document.querySelector('.js-growable'));
@@ -374,20 +404,20 @@ var Babble = {
 
         var toAppend = `
             
-            <img src="${image}" alt="" class="bab-Message-img">
-            <div class="bab-Message-div">
-                <span class="bab-Message-name">
+            <img src="${image}" message="${id}" alt="" class="bab-Message-img " onerror="this.src='images/offline.png';">
+            <div class="bab-Message-div " message="${id}">
+                <span class="bab-Message-name " message="${id}">
                     ${name}
                 </span>
-                <span class="bab-Message-time">
+                <span message="${id}" class="bab-Message-time ">
                     ${time}
                 </span>
-                <div class="bab-Tooltip bab-Message-delete bab-u-hidden">
-                <img src="images/del.png" alt="delete button">
-                    <span class="bab-Tooltiptext">Click to delete</span>
+                <div  message="${id}" class="bab-Tooltip bab-Message-delete bab-u-hidden " onclick="Babble.deleteMessage(this.getAttribute('message'))">
+                <img message="${id}" src="images/del.png" alt="delete button" >
+                    <span message="${id}" class="bab-Tooltiptext ">Click to delete</span>
                 </div>
                 <br>
-                <span class="bab-Message-text">
+                <span class="bab-Message-text " message="${id}">
                     ${text}
                 </span>
             </div>
@@ -395,25 +425,51 @@ var Babble = {
            `
         
         var li = document.createElement('li');
-        
+        li.setAttribute('message', id)
         li.classList.add('bab-Message');
         li.classList.add('bab-u-hidden');
         setTimeout(function(){
             li.classList.remove('bab-u-hidden');
         },300);
- 
+        
         li.innerHTML = toAppend;
         this.messageList['message-' + id] = li;
         var div = li.querySelector('.bab-Message-div');
         setTimeout(function(){
             div.style.backgroundColor = 'white';
+        
         },1000);
+        setTimeout(function(){
+            div.style.transition = 'none';
+        
+        },2000);
+        div.setAttribute('id', 'message-' + id);
+
         this.messageList.appendChild(li);
+        if(this.sentByMe(id)){
+            li.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
+            li.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
+        }
+        li.addEventListener('mouseover', function(evt){
+            if(evt.target !== evt.currentTarget){
+            var id = evt.currentTarget.getAttribute('message');
+            this.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
+            if(Babble.sentByMe(id))
+                this.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
+            }   
+            evt.stopPropagation(); 
+    
+        });
+        li.addEventListener('mouseleave', function(evt){
+            this.querySelector('.bab-Message-div').style.backgroundColor = 'white';
+            if(Babble.sentByMe(id))
+                this.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
+        });
         this.scrollMessageSection();
     },
     removeMessage(id){
 
-
+        this.messageList['message-' + id].remove();
     },
 
     
@@ -421,7 +477,8 @@ var Babble = {
 
 
 window.onload = function(){
-    Babble.init()
+    Babble.init();
+
 }
 window.onresize = function(){
     Babble.scrollMessageSection();

@@ -20,7 +20,10 @@ module.exports = {
     userGoneTimeOut: 3000,
     port: 9000,
     getUserCount(){
-        return Object.keys(this.messageRequests).length;
+        var msgReq = Object.keys(this.messageRequests).length;
+        var staReq = Object.keys(this.statsRequests).length;
+
+        return Math.max(msgReq,staReq);
     },
     getMessagesCount(){
         return this.messages.length;
@@ -38,6 +41,13 @@ module.exports = {
     getMessagesByMe(email){
         return this.messages.filter((msg) => {
             return msg.message.email === email;
+        }).map((msg) => {
+            return msg.id;
+        });
+    },
+    getMessagesByMyID(id){
+        return this.messages.filter((msg) => {
+            return msg.sender === id;
         }).map((msg) => {
             return msg.id;
         });

@@ -13,19 +13,19 @@ app.success = function (data, res, removeClient)  {
     if(! res.writeHead)
         return;
     try{
-        if(removeClient){
-            var path = res.req._parsedOriginalUrl.pathname,
-            sender = res.req.headers.sender;
-        }
+        // if(removeClient){
+        //     var path = res.req._parsedOriginalUrl.pathname,
+        //     sender = res.req.headers.sender;
+        // }
         res.writeHead(200);
         res.end(JSON.stringify(data));
-        if(removeClient){
+        // if(removeClient){
         
-            if(path == babble.urls.messages)
-                babble.removeMessageRes(sender);
-            else if(path == babble.urls.stats)
-                babble.removeStatsRes(sender);
-        }
+        //     if(path == babble.urls.messages)
+        //         babble.removeMessageRes(sender);
+        //     else if(path == babble.urls.stats)
+        //         babble.removeStatsRes(sender);
+        // }
     }catch(err){
         console.log('app.success err: ',err);
     }
@@ -42,10 +42,10 @@ app.all('*', function(req, res, next) {
     
     req.on('close', function() {
         console.log('closed');        
-        if(req.path == babble.urls.messages)
-            app.emit('ReqServed', req.headers.sender);
-        else if (req.path == babble.urls.stats)
-            babble.removeStatsRes(req.headers.sender);
+        // if(req.path == babble.urls.messages)
+        //     babble.removeMessageRes(req.headers.sender);
+        // else if (req.path == babble.urls.stats)
+        //     babble.removeStatsRes(req.headers.sender);
     });
 
     next();
@@ -54,16 +54,32 @@ app.all('*', function(req, res, next) {
 app.relaseStats = function(){
     console.log('in relase stats: ');
     for(sender in babble.statsRequests) {
-        var res = babble.messageRequests[sender];
+        var res = babble.statsRequests[sender];
         var data = {
             users: babble.getUserCount(),
             messages: babble.messages.length,
         }
         app.success(data, res, true);
     }
+
 };
-app.relaseMessages = function(){
+app.relaseMessages = function(type, id){
     console.log('in relase messages: ');
+    
+    if(type == 'remove'){
+        for(sender in babble.messageRequests) {
+            var res = babble.messageRequests[sender];
+            if(res){
+                var data = {
+                    type: type,
+                    id: id
+                };
+                app.success(data, res, true);
+            }
+        }
+        app.relaseStats();
+        return;
+    }
     for(sender in babble.messageRequests) {
         var res = babble.messageRequests[sender];
         if(res){
@@ -74,17 +90,21 @@ app.relaseMessages = function(){
             app.success(data, res, true);
         }
     }
+    app.relaseStats();
 };
-app.on('ReqServed', function (id) {
-    babble.removeMessageRes(id);
-    setTimeout(function(){
-        if(babble.messageRequests[id] == undefined){
-            console.log("request died");
-            babble.removeMessageRes(id);
-            app.relaseStats();
-        }else
-            console.log('user still alive');
-    }.bind(this), babble.userGoneTimeOut);
+app.on('AssertUser', function (id) {
+    // setTimeout(function(){
+    //     babble.removeMessageRes(id);
+        
+    // }.bind(this), 1000);
+    // setTimeout(function(){
+    //     if(babble.messageRequests[id] == undefined){
+    //         console.log("request died");
+    //         babble.removeMessageRes(id);
+    //         app.relaseStats();
+    //     }else
+    //         console.log('user still alive');
+    // }.bind(this), babble.userGoneTimeOut);
   });
 app.get('/', function (req, res) {
    
@@ -106,7 +126,7 @@ app.get('/messages', function(req, res){
     if(counter != babble.getMessagesCount()){
         var data = {messages: babble.messages.slice(counter), counter: babble.getMessagesCount()};
         babble.messageRequests[req.headers.sender] = res;
-        app.emit('ReqServed', req.headers.sender)
+        
         app.success(data, res);
     }else{
         babble.messageRequests[req.headers.sender] = res;
@@ -118,15 +138,18 @@ app.get('/messages', function(req, res){
 });
 
 app.post('/user', function(req, res){
-    if(req.body.data.email != ""){
+    if(req.body.data && (req.body.data.email != "")){
         var sentByme = babble.getMessagesByMe(req.body.data.email);
         app.success({id: babble.id++, byMe: sentByme}, res);
 
     }
     else{
-        app.success({id: babble.id++}, res);
+        var sentByme = babble.getMessagesByMyID(req.headers.sender);
+        app.success({id: babble.id++, byMe: sentByme}, res);
     }
-
+    setTimeout(function() {
+        app.relaseStats();
+    }, 2000);
     
 });
 
@@ -137,7 +160,7 @@ app.post('/messages', function(req, res){
     
     var msg = req.body.data;
 
-    var msgId = messages.addMessage(msg);
+    var msgId = messages.addMessage(msg, req.headers.sender);
     console.log(babble.messages[babble.getMessagesCount()-1]);
     app.success({id: msgId},res);
     app.relaseMessages();
@@ -146,22 +169,30 @@ app.post('/messages', function(req, res){
     // console.log(req.connection);
 });
 app.delete('/messages/:id', function(req, res){
-    var id = req.params.id;
-    if(isNaN(id) || id < 0 || id > babble.id || id === ''){
-        console.log("err" + id + req.query);
+    var id = parseInt(req.params.id), email = req.body.data.email;
+    if(isNaN(id) || id < 0 || id > babble.messageId || id === ''){
+        console.log("err bab id " + id );
         res.writeHead(400);
         res.end("The entered message id \""+ id + "\" is bad." );
     }
-    console.log('delete '+ req.params.id);
-    console.log(req.body.data);
-    res.writeHead(200);
-    res.end("all good, message deleted");
+    var byEmail = babble.getMessagesByMe(email).indexOf(id) !== -1,
+        byId = babble.getMessagesByMyID(req.headers.sender).indexOf(id) !== -1;
+    if(byEmail || byId){
+        messages.deleteMessage(id);
+        app.relaseMessages('remove', id);
+        console.log('delete '+ req.params.id);
+        app.success({id: req.params.id},res);
+    }else{
+        res.writeHead(400);
+        res.end("The entered message id \""+ id + "\" doesn't belong to you." );
+    }
 });
 app.delete('/logout/:id', function(req, res){
     var id = req.params.id;
 
-    if(req.headers.sender == id)
-        babble.removeClient(id);
+    console.log('log out: ',id);
+    babble.removeClient(id);
+    app.relaseStats();
     app.success("",res);
 });
 app.get('/stats', function(req, res){
@@ -178,8 +209,6 @@ app.get('/stats', function(req, res){
         babble.statsRequests[req.headers.sender] = res;
         console.log('pushed stat res ',Object.keys(babble.statsRequests).length);
     }
-    
-
 });
 app.options('*', function(req, res){
     console.log('options request');
