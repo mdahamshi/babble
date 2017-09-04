@@ -185,6 +185,7 @@ var Babble = {
 
         var show = () => {
             bar.style.padding = '6px';
+            console.log(bar.scrollHeight + 12 )
             bar.style.height = bar.scrollHeight + 12 + 'px';
         };
         var hide = () => {
@@ -195,7 +196,7 @@ var Babble = {
         var classHidden = () => {
             bar.classList.add('bab-u-hidden');
         }
-        this.delay(show, 300);
+        this.delay(show, 500);
         this.delay(hide, time);
         this.delay(classHidden, time + 1000);
         

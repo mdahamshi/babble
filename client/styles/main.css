@@ -79,9 +79,13 @@ nav {
 .bab-InfoBar {
     font-size: 16px;
     z-index: 20;
+    top: 100px;
+    position: fixed;
+    width: 100%;
     word-wrap: break-word;
     text-align: center;
     border-radius: 2px;
+    display: inline-block;
     height: 0px;
     overflow: hidden;
     transition: all 1000ms;
@@ -193,7 +197,7 @@ nav {
         display: flex;
         flex-direction: column;
         background-color: rgb(246, 246, 246);
-        width: calc(100% );
+        width: 100% ;
         margin-right: 8px;
         height: calc(100% - 100px); /*116 = 100 (main header) + 16 margins*/
     }
@@ -379,9 +383,9 @@ nav {
         border-color: rgb(215, 215, 215);
         transition: all 1000ms;
     }
-    .bab-Message-div:hover {
+    /* .bab-Message-div:hover {
         background-color: rgb(235, 237, 236);
-    }
+    } */
     .bab-Message-name {
         color: rgb(32, 39, 41);
         font-weight: 700;
@@ -445,7 +449,10 @@ nav {
     .bab-Tooltip:hover .bab-Tooltiptext {
         visibility: visible;
     }
-
+    .bab-InfoBar{
+        width: 82.03125%;
+        left: 17.96875%;
+    }
     /* **************************MESSAGE SECTION *************************** */
     .bab-MessagesSection {
         margin-left: 24px;
