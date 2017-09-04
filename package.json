@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Babble, talk freely",
   "main": "index.js",
-  "start": "node server/main.js",
   "directories": {
     "test": "test"
   },
@@ -17,6 +16,7 @@
     "mocha": "^3.5.0"
   },
   "scripts": {
+    "start": "node server/main.js",
     "test": "mocha"
   },
   "repository": {
