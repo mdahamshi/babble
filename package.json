@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Babble, talk freely",
   "main": "index.js",
+  "start": "node server/main.js"
   "directories": {
     "test": "test"
   },
