@@ -227,7 +227,7 @@ var Babble = {
             if(options.data)
                 data = JSON.stringify({data:options.data});
             console.log(options.url || Babble.apiUrl)
-            xhr.open(options.method, (options.url || Babble.apiUrl) + options.path,
+            xhr.open(options.method,  options.path,
                                  options.async === undefined ? true : options.async);
             if(options.async !== false)
                 xhr.timeout = options.timeout ||  Babble.timeout;
