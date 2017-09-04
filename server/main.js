@@ -240,7 +240,7 @@ app.use(function(req, res){
 // app.delete('*', function(req, res){
 //     console.log('delete req unknown', req.url);
 // });
-app.listen(babble.port, function(){
+app.listen(process.env.PORT || babble.port, function(){
     console.log(new Date() + 'listening on port '+ babble.port  + '...');
 // console.log(app._router.stack);
 
