@@ -266,15 +266,22 @@ var Babble = {
                 });
                 if(options.path == Babble.urls.getMessages)
                     Babble.getMessages();
+                if(options.path == Babble.urls.stats)
+                    Babble.getStats()
             };    
             xhr.onload = function() {
                 if(this.status >=200 && this.status < 300)
                     resolve(options.content ? xhr.response : JSON.parse(xhr.response));
-                else
+                else{
                     reject({
                         status: this.status,
                         statusText: this.statusText
                     });
+                    if(options.path == Babble.urls.getMessages)
+                        Babble.getMessages();
+                    if(options.path == Babble.urls.stats)
+                        Babble.getStats()
+                }
             };
             xhr.send(data);
             
