@@ -18,7 +18,7 @@ var Babble = {
     sentMessages: new Array(),
     currentMessage: "",
     counter: 0,
-    timeout: 10000,
+    timeout: 60000,
     apiUrl: 'http://localhost:9000',
     lastSentMessage: null,
     showingInfo: false,
