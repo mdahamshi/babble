@@ -39,7 +39,7 @@ app.all('*', function(req, res, next) {
     // if(req.path === '/messages' && req.method === 'GET'){
     //     babble.messageRequests[req.headers.sender] = res;
     // }
-    
+    if(req.path == babble.urls.messages && req.method == 'GET')
     req.on('close', function() {
         console.log('closed ', req.path,' method ',req.method);     
         var map = babble.getRsponseMap(req.path);
@@ -77,9 +77,23 @@ app.relaseStats = function(){
     }, 500);
 
 };
-app.relaseMessages = function( ){
+app.relaseMessages = function(type, id ){
     console.log('in relase messages: ');
-    
+    if(type == 'remove'){
+        for(sender in babble.messageRequests) {
+            var res = babble.messageRequests[sender];
+            if(res){
+                var data = {
+                type: type,
+                id: id
+                 };
+            app.success(data, res, true);
+            }
+        }
+        app.relaseStats();
+        return;
+    }
+        
     for(sender in babble.messageRequests) {
         var res = babble.messageRequests[sender];
         if(res){
@@ -180,7 +194,9 @@ app.delete('/messages/:id', function(req, res){
         byId = babble.getMessagesByMyID(req.headers.sender).indexOf(id) !== -1;
     if(byEmail || byId){
         messages.deleteMessage(id);
-        // app.relaseMessages('remove', id);
+        app.relaseMessages('remove', id);
+
+        app.relaseStats();
         console.log('delete '+ req.params.id);
         app.success({id: req.params.id},res);
     }else{

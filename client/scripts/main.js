@@ -78,12 +78,12 @@ var Babble = {
     getMessagesResponse(data){
         if(! data)
             return;
-        // if(data.type == 'remove'){
-        //     this.removeMessage(data.id);
-        //     this.counter--;
-        //     this.getMessages();
-        //     return;
-        // }
+        if(data.type == 'remove'){
+            this.removeMessage(data.id);
+            this.counter--;
+            this.getMessages();
+            return;
+        }
         // if(this.counter !== 0 )
         //     this.showInfo('New ! ',"got new "+ 
         // (data.counter - this.counter == 1 ? 'message':(data.counter - this.counter) + ' messages'),
@@ -92,6 +92,7 @@ var Babble = {
         data.messages.forEach(function (msg) {
             this.appendMessage(msg.message, msg.id);
         }.bind(this));
+        this.delay(this.scrollMessageSection,1000);
         this.getMessages();
     },
     postMessage(message, callback = this.postMessageResponse.bind(this)){
@@ -118,6 +119,8 @@ var Babble = {
         }).then(callback);
     },
     deleteMessageResponse(data){
+        // this.messageCount--;
+        // this.removeMessage(data.id);
         console.log(data);
     },
     sendMessage(){
@@ -141,6 +144,8 @@ var Babble = {
     getStatsResponse(data){
         if(! data)
             return;
+        // if(this.messageCount > data.messages)
+        //     this.showInfo('Update','Some messages have been deleted, refresh the page if you want deleted messages disappered.','info',6000);
         this.userCount = data.users;
         this.messageCount = data.messages;
         this.$('#bab-messageCount').innerHTML = data.messages;
@@ -425,7 +430,7 @@ var Babble = {
         
         var li = document.createElement('li');
         li.setAttribute('message', id)
-        li.classList.add('bab-Message');
+        li.classList.add('bab-Message','bab-u-slide-fade');
 
         
         li.innerHTML = toAppend;
@@ -442,30 +447,51 @@ var Babble = {
         div.setAttribute('id', 'message-' + id);
 
         this.messageList.appendChild(li);
+        setTimeout(function() {
+            li.classList.add('bab-u-messageShow');
+            Babble.scrollMessageSection();
+        }, 50);
         if(this.sentByMe(id)){
             li.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
             li.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
         }
-        li.addEventListener('mouseover', function(evt){
-            if(evt.target !== evt.currentTarget){
-            var id = evt.currentTarget.getAttribute('message');
-            this.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
-            if(Babble.sentByMe(id))
-                this.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
-            }   
-            evt.stopPropagation(); 
-    
-        });
-        li.addEventListener('mouseleave', function(evt){
-            this.querySelector('.bab-Message-div').style.backgroundColor = 'white';
-            if(Babble.sentByMe(id))
-                this.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
-        });
-        this.scrollMessageSection();
+        li.addEventListener('mouseover', this.messageMouseOver);
+        li.addEventListener('mouseleave', this.messageMouseLeave);
+        
+    },
+    messageMouseOver(evt){
+        if(evt.target !== evt.currentTarget){
+        var id = evt.currentTarget.getAttribute('message');
+        this.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
+        if(Babble.sentByMe(id))
+            this.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
+        }   
+        evt.stopPropagation(); 
+
+    },
+    messageMouseLeave(evt){
+        var id = evt.currentTarget.getAttribute('message');
+        this.querySelector('.bab-Message-div').style.backgroundColor = 'white';
+        if(Babble.sentByMe(id))
+            this.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
     },
     removeMessage(id){
-
-        this.messageList['message-' + id].remove();
+        var li = this.messageList['message-' + id];
+        li.removeEventListener('mouseover', this.messageMouseOver);
+        li.removeEventListener('mouseleave',this.messageMouseLeave);
+        var div = li.querySelector('.bab-Message-div');
+        div.style.transition = 'all';
+        div.style.transitionDuration = '1000ms';
+        // li.classList.add('bab-Message','bab-u-slide-fade','show');
+        div.style.backgroundColor = this.alert['error'].back;
+        setTimeout(function() {
+            li.classList.remove('bab-u-messageShow');
+            setTimeout(function() {
+                li.remove();
+            }, 600);
+            // this.messageList['message-' + id].remove();
+        
+        }.bind(this), 1000);
     },
 
     

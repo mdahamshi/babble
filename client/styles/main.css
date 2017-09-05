@@ -36,6 +36,17 @@ time, mark, audio, video {
     display:none;
     visibility:hidden;
 }
+/*********************Message Animation*****************/
+.bab-u-slide-fade {
+    transition: all 0.4s ease-out;
+    opacity: 0;
+  }
+  li.bab-u-messageShow {
+    opacity: 1;
+    margin-bottom: 15px;
+    margin-right: 8px;
+    height: auto;
+  }
 /* *******************  TEMP  ************************ */
 body ,html {
     height: 100%;
@@ -97,6 +108,7 @@ nav {
 }
 .bab-MessagesSection-ol {
     list-style-type: none;
+    transition: all 0.4s ease-out;
 }
 .bab-MessagesSection {
     /* TEMP */
@@ -317,6 +329,7 @@ nav {
     .bab-MessagesSection {
         margin-left: 10px;
         margin-right: 10PX;
+        transition: all 0.4s ease-out;
         flex-grow: 1;        
         /* overflow: scroll; */
     }
@@ -358,9 +371,8 @@ nav {
     .bab-Message {
         display: flex;
         /* margin-top: 8px; */
-        margin-bottom: 15px;
-        margin-right: 8px;
-        
+        height: 0;
+        overflow: hidden;
         
     }
     .bab-Message-img {
@@ -377,6 +389,7 @@ nav {
         border-radius: 10px;
         background-color: #dff0d8;
         max-width: 600px;
+        word-wrap: break-word;
         padding: 4px 6px 4px 6px;
         border: 1px;
         border-style: solid;
