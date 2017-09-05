@@ -22,7 +22,7 @@ module.exports = {
     userGoneTimeOut: 3000,
     port: 9000,
     getUserCount(){
-        return this.users;
+        return this.getMessagesResLength();
     },
     getRsponseMap(path){
         if(path == this.urls.messages)
