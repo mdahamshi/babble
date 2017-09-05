@@ -489,7 +489,6 @@ var Babble = {
 
     },
     messageMouseLeave(evt){
-        console.log(evt.currentTarget)
         var id = evt.currentTarget.getAttribute('message');
         evt.currentTarget.querySelector('.bab-Message-div').style.backgroundColor = 'white';
         if(Babble.sentByMe(id))
