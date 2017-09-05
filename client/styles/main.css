@@ -288,6 +288,17 @@ nav {
         margin-left: auto;
         padding-right: 6px;
     }
+    .bab-Message-deleteButton{
+        border: none;
+        float: right;
+        
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        outline: none;
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0)
+    }
     .bab-Modal-cancel {
         margin-right: 6px;
         padding: 3px 8px 3px 8px;
@@ -389,6 +400,7 @@ nav {
         border-radius: 10px;
         background-color: #dff0d8;
         max-width: 600px;
+        min-width: 420px;
         word-wrap: break-word;
         padding: 4px 6px 4px 6px;
         border: 1px;

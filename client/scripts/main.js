@@ -15,6 +15,7 @@ var Babble = {
         anonymousImage: 'images/null.png',
 
     },
+    tab: 10,
     sentMessages: new Array(),
     currentMessage: "",
     counter: 0,
@@ -434,7 +435,9 @@ var Babble = {
                     ${time}
                 </span>
                 <div  message="${id}" class="bab-Tooltip bab-Message-delete bab-u-hidden " onclick="Babble.deleteMessage(this.getAttribute('message'))">
+                <button aria-label="delete button" class="bab-Message-deleteButton">
                 <img message="${id}" src="images/del.png" alt="delete button" >
+                </button>
                     <span message="${id}" class="bab-Tooltiptext ">Click to delete</span>
                 </div>
                 <br>

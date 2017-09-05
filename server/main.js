@@ -30,15 +30,7 @@ app.success = function (data, res, removeClient)  {
         console.log('app.success err: ',err, res);
     }
 };
-setInterval(function(){
-    for(sender in babble.messageRequests) {
-        if(babble.messageRequests[sender] == -1 || babble.messageRequests[sender] == undefined)
-            if(babble.statsRequests[sender] == -1 || babble.statsRequests[sender] == undefined){
-                babble.removeClient(sender);
-                app.relaseStats();
-            }
-    }
-},babble.cleaningInterval);
+
 
 app.use(express.static(parent +  'client/'));
 app.all('*', function(req, res, next) {
@@ -118,7 +110,7 @@ app.relaseMessages = function(type, id ){
         else{
             for(sender in babble.messageRequests) {
                 res = babble.messageRequests[sender];
-                if(res){
+                if(res !== -1 && res !== undefined){
                     data = {
                         messages: babble.messages.slice(res.req.query.counter), 
                         counter: babble.getMessagesCount()
@@ -295,3 +287,12 @@ app.listen(process.env.PORT || babble.port, function(){
 // console.log(app._router.stack);
 
 });
+setInterval(function(){
+    for(sender in babble.messageRequests) {
+        if(babble.messageRequests[sender] == -1 || babble.messageRequests[sender] == undefined)
+            if(babble.statsRequests[sender] == -1 || babble.statsRequests[sender] == undefined){
+                babble.removeClient(sender);
+                app.relaseStats();
+            }
+    }
+},babble.cleaningInterval);
