@@ -264,7 +264,7 @@ var Babble = {
                     status: this.status,
                     statusText: xhr.statusText
                 });
-                if(options.path == Babble.urls.getMessages)
+                if(options.path == Babble.urls.getMessages + Babble.counter)
                     Babble.getMessages();
                 if(options.path == Babble.urls.stats)
                     Babble.getStats()
@@ -277,7 +277,7 @@ var Babble = {
                         status: this.status,
                         statusText: this.statusText
                     });
-                    if(options.path == Babble.urls.getMessages)
+                    if(options.path == Babble.urls.getMessages + Babble.counter)
                         Babble.getMessages();
                     if(options.path == Babble.urls.stats)
                         Babble.getStats()
