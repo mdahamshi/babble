@@ -70,6 +70,7 @@ var Babble = {
             this.logData("Erorr, counter should be >= 0");
             return;
         }
+        console.log(this.formatDate(),'getting messages');
         this.sendRequest({
             method: 'GET',
             path: this.urls.getMessages + counter
@@ -78,6 +79,7 @@ var Babble = {
     getMessagesResponse(data){
         if(! data)
             return;
+        console.log(this.formatDate(),'response messages',data);        
         if(data.type == 'remove'){
             this.removeMessage(data.id);
             this.counter--;
@@ -134,6 +136,8 @@ var Babble = {
         this.currentMessage = "";
     },
     getStats(callback  = this.getStatsResponse.bind(this)){
+        console.log(this.formatDate(),'getting stats');
+        
         this.sendRequest({
             method: 'GET',
             header:[this.userCount,this.messageCount],
@@ -144,6 +148,7 @@ var Babble = {
     getStatsResponse(data){
         if(! data)
             return;
+        console.log(this.formatDate(),'response stats',data);        
         // if(this.messageCount > data.messages)
         //     this.showInfo('Update','Some messages have been deleted, refresh the page if you want deleted messages disappered.','info',6000);
         this.userCount = data.users;
@@ -230,7 +235,6 @@ var Babble = {
             var xhr = new XMLHttpRequest(), data = null;
             if(options.data)
                 data = JSON.stringify({data:options.data});
-            console.log(options.url || Babble.apiUrl)
             xhr.open(options.method,  options.path,
                                  options.async === undefined ? true : options.async);
             if(options.async !== false)
@@ -379,11 +383,15 @@ var Babble = {
         var messageSection = Babble.$('#bab-messagesSection');
         messageSection.scrollTop = messageSection.scrollHeight;
     },
-    formatDate(date){
-        var hours = date.getHours(), minutes = date.getMinutes();
+    formatDate(date = new Date(), sec = true){
+        var hours = date.getHours(), minutes = date.getMinutes(),seconds = date.getSeconds();
         hours = hours < 10 ? '0' + hours : hours;
         minutes = minutes < 10 ? '0' + minutes : minutes;
-        return hours + ':' + minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        if(sec)
+            return hours + ":" + minutes + ":" + seconds;
+        else
+            return hours + ':' + minutes;
     },
     logOut(){
         if(! this.id)
@@ -400,7 +408,7 @@ var Babble = {
         //extracting data from message
         var name = message.name || 'Anonymous', email = message.email, 
         text = message.message, 
-        time = this.formatDate(new Date(message.timestamp)) ,
+        time = this.formatDate(new Date(message.timestamp), false) ,
         image = this.urls.anonymousImage;
         
         if(message.image)

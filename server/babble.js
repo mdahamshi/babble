@@ -14,6 +14,8 @@ module.exports = {
     messageRequests: {},
     statsRequests: {},
     imageSize: 36,
+    inRelaseMsg: false,
+    inRelaseStt: false,
     routs: ['/stats', '/messages', '/'],
     id: 1,
     messageId: 1,
@@ -31,6 +33,22 @@ module.exports = {
     },
     getMessagesCount(){
         return this.messages.length;
+    },
+    formatDate(date= new Date(),sec = true){
+        var hours = date.getHours(), minutes = date.getMinutes(),seconds = date.getSeconds();
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        if(sec)
+            return hours + ":" + minutes + ":" + seconds;
+        else
+            return hours + ':' + minutes;
+    },
+    getStatResLength(){
+        return Object.keys(this.statsRequests).length;
+    },
+    getMessagesResLength(){
+        return Object.keys(this.messageRequests).length;
     },
     removeClient(id){
         delete this.statsRequests[id];

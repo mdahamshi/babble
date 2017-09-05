@@ -64,47 +64,71 @@ app.all('*', function(req, res, next) {
    });
 
 app.relaseStats = function(){
-    setTimeout(function() {
-        console.log('in relase stats: ');
-        for(sender in babble.statsRequests) {
-            var res = babble.statsRequests[sender];
-            var data = {
-                users: babble.getUserCount(),
-                messages: babble.messages.length,
+    if(babble.inRelaseStt)
+        return;
+    babble.inRelaseStt = true;
+    try{
+        setTimeout(function() {
+            console.log(babble.formatDate() ,'in relase stats: ',babble.getStatResLength());
+            for(sender in babble.statsRequests) {
+                console.log('relasing for sender:  ',sender);
+                var res = babble.statsRequests[sender];
+                var data = {
+                    users: babble.getUserCount(),
+                    messages: babble.messages.length,
+                }
+                app.success(data, res, true);
             }
-            app.success(data, res, true);
-        }
-    }, 500);
+        }, 500);
+    }catch(err){
+        console.log('relase stat err ',err);
+    }finally{
+        babble.inRelaseStt = false;
+    }
 
 };
 app.relaseMessages = function(type, id ){
-    console.log('in relase messages: ');
-    if(type == 'remove'){
-        for(sender in babble.messageRequests) {
-            var res = babble.messageRequests[sender];
-            if(res){
-                var data = {
-                type: type,
-                id: id
-                 };
-            app.success(data, res, true);
+    if(babble.inRelaseMsg)
+        return;
+    babble.inRelaseMsg = true;
+    var res, data;    
+    try{
+        console.log(babble.formatDate(),'in relase messages: ',babble.getMessagesResLength());
+        if(type == 'remove'){
+            for(sender in babble.messageRequests) {
+                console.log('relasing for sender:  ',sender);
+                res = babble.messageRequests[sender];
+                if(res){
+                    data = {
+                        type: type,
+                        id: id
+                    };
+                }
+                app.success(data, res, true);
             }
         }
-        app.relaseStats();
-        return;
-    }
-        
-    for(sender in babble.messageRequests) {
-        var res = babble.messageRequests[sender];
-        if(res){
-            var data = {
-                messages: babble.messages.slice(res.req.query.counter), 
-                counter: babble.getMessagesCount()
-            };
-            app.success(data, res, true);
+        else{
+            for(sender in babble.messageRequests) {
+                res = babble.messageRequests[sender];
+                if(res){
+                    data = {
+                        messages: babble.messages.slice(res.req.query.counter), 
+                        counter: babble.getMessagesCount()
+                    };
+                    
+                }   
+                app.success(data, res, true);
+            }
         }
     }
-    app.relaseStats();
+    catch(err){
+        console.log('err relase msg ',err);
+        
+    }finally {
+        babble.inRelaseMsg = false;
+        app.relaseStats();
+        
+    }
 };
 app.on('AssertUser', function (id) {
     // setTimeout(function(){
