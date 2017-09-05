@@ -478,20 +478,22 @@ var Babble = {
     },
     messageMouseOver(evt){
         if(evt.target !== evt.currentTarget){
-        var id = evt.currentTarget.getAttribute('message');
-        this.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
-        if(Babble.sentByMe(id))
-            this.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
-            this.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
+            var id = evt.currentTarget.getAttribute('message');
+            evt.currentTarget.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
+            if(Babble.sentByMe(id)){
+                evt.currentTarget.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
+                evt.currentTarget.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
+            }       
         }   
         evt.stopPropagation(); 
 
     },
     messageMouseLeave(evt){
+        console.log(evt.currentTarget)
         var id = evt.currentTarget.getAttribute('message');
-        this.querySelector('.bab-Message-div').style.backgroundColor = 'white';
+        evt.currentTarget.querySelector('.bab-Message-div').style.backgroundColor = 'white';
         if(Babble.sentByMe(id))
-            this.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
+            evt.currentTarget.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
     },
     removeMessage(id){
         var li = this.messageList['message-' + id];

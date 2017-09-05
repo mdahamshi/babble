@@ -472,9 +472,7 @@ nav {
         margin-right: 24PX;
         /* overflow: scroll; */
     }
-    .bab-Message-div {
-        min-width: 420px;
-    }
+
 
     /* *************************SEND MESSAGE ******************************* */
     .bab-SendMessage {
