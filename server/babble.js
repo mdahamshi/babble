@@ -1,6 +1,5 @@
 module.exports = {
     messages: [],
-    users: 0,
     urls: {
         messages: '/messages',
         stats: '/stats',

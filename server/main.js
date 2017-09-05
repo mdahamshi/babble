@@ -48,13 +48,11 @@ app.all('*', function(req, res, next) {
                 map[req.headers.sender] = -1;
             setTimeout(function(){
                 console.log('in fucking time out',babble.messageRequests[req.headers.sender] === -1 
-            ,babble.statsRequests[req.headers.sender] === -1,babble.users);
+            ,babble.statsRequests[req.headers.sender] === -1);
 
                 if(babble.messageRequests[req.headers.sender] === -1 
                     && babble.statsRequests[req.headers.sender] === -1){
                     babble.removeClient(req.headers.sender);
-                    console.log('now decrement users');
-                    babble.users--;
                 }
             }, 4000);
         }   
@@ -176,7 +174,6 @@ app.get('/messages', function(req, res){
 });
 
 app.post('/user', function(req, res){
-    babble.users++;
     if(req.body.data && (req.body.data.email != "")){
         var sentByme = babble.getMessagesByMe(req.body.data.email);
         app.success({id: babble.id++, byMe: sentByme}, res);
@@ -233,8 +230,7 @@ app.delete('/logout/:id', function(req, res){
 
     console.log('log out: ',id);
     
-    if(babble.messageRequests[id] != undefined)
-        babble.users--;
+
     babble.removeClient(id);
     app.relaseStats();
     app.success("",res);

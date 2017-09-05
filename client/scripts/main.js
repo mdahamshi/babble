@@ -482,6 +482,7 @@ var Babble = {
         this.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
         if(Babble.sentByMe(id))
             this.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
+            this.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
         }   
         evt.stopPropagation(); 
 
@@ -518,18 +519,22 @@ var Babble = {
 window.onload = function(){
     Babble.init();
 
-}
+};
+window.onblur = function(){
+    if(Babble.registered)
+        Babble.updateLocalStorage();
+};
 window.onresize = function(){
     Babble.scrollMessageSection();
-}
+};
 
 document.onclick = function(evt){
     console.log(evt.clientX + ',',evt.clientY);
-}
+};
 
 window.onbeforeunload = function(){
     if(Babble.registered)
         Babble.updateLocalStorage();
     Babble.logOut();
     // return msg;
-}
+};
