@@ -27,7 +27,7 @@ app.success = function (data, res, removeClient)  {
         //         babble.removeStatsRes(sender);
         // }
     }catch(err){
-        console.log('app.success err: ',err);
+        console.log('app.success err: ',err, res);
     }
 };
 app.use(express.static(parent +  'client/'));
@@ -39,7 +39,7 @@ app.all('*', function(req, res, next) {
     // if(req.path === '/messages' && req.method === 'GET'){
     //     babble.messageRequests[req.headers.sender] = res;
     // }
-    if(req.path == babble.urls.messages && req.method == 'GET')
+    if((req.path == babble.urls.messages && req.method == 'GET'))
     req.on('close', function() {
         console.log('closed ', req.path,' method ',req.method);     
         var map = babble.getRsponseMap(req.path);
@@ -196,7 +196,7 @@ app.delete('/messages/:id', function(req, res){
         messages.deleteMessage(id);
         app.relaseMessages('remove', id);
 
-        app.relaseStats();
+        // app.relaseStats();
         console.log('delete '+ req.params.id);
         app.success({id: req.params.id},res);
     }else{
