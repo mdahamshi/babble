@@ -41,45 +41,45 @@ app.all('*', function(req, res, next) {
     // }
     
     req.on('close', function() {
-        console.log('closed');        
-        // if(req.path == babble.urls.messages)
-        //     babble.removeMessageRes(req.headers.sender);
-        // else if (req.path == babble.urls.stats)
-        //     babble.removeStatsRes(req.headers.sender);
+        console.log('closed ', req.path,' method ',req.method);     
+        var map = babble.getRsponseMap(req.path);
+        if(map){
+            if(map[req.headers.sender] !== undefined)
+                map[req.headers.sender] = -1;
+            setTimeout(function(){
+                console.log('in fucking time out',babble.messageRequests[req.headers.sender] === -1 
+            ,babble.statsRequests[req.headers.sender] === -1,babble.users);
+
+                if(babble.messageRequests[req.headers.sender] === -1 
+                    && babble.statsRequests[req.headers.sender] === -1){
+                    babble.removeClient(req.headers.sender);
+                    console.log('now decrement users');
+                    babble.users--;
+                }
+            }, 4000);
+        }   
     });
 
     next();
    });
 
 app.relaseStats = function(){
-    console.log('in relase stats: ');
-    for(sender in babble.statsRequests) {
-        var res = babble.statsRequests[sender];
-        var data = {
-            users: babble.getUserCount(),
-            messages: babble.messages.length,
+    setTimeout(function() {
+        console.log('in relase stats: ');
+        for(sender in babble.statsRequests) {
+            var res = babble.statsRequests[sender];
+            var data = {
+                users: babble.getUserCount(),
+                messages: babble.messages.length,
+            }
+            app.success(data, res, true);
         }
-        app.success(data, res, true);
-    }
+    }, 500);
 
 };
-app.relaseMessages = function(type, id){
+app.relaseMessages = function( ){
     console.log('in relase messages: ');
     
-    if(type == 'remove'){
-        for(sender in babble.messageRequests) {
-            var res = babble.messageRequests[sender];
-            if(res){
-                var data = {
-                    type: type,
-                    id: id
-                };
-                app.success(data, res, true);
-            }
-        }
-        app.relaseStats();
-        return;
-    }
     for(sender in babble.messageRequests) {
         var res = babble.messageRequests[sender];
         if(res){
@@ -118,12 +118,12 @@ app.get('/', function (req, res) {
 
 app.get('/messages', function(req, res){
     var counter = req.query.counter;
-    if(isNaN(counter) || counter < 0 || counter > babble.messages.length || counter === ''){
+    if(isNaN(counter) || counter < 0 || counter === ''){
         console.log("err" + counter + req.query);
         res.writeHead(400);
         res.end("The entered query \""+ req.query.counter + "\" is bad." );
-    }
-    if(counter != babble.getMessagesCount()){
+    } 
+    if(counter < babble.getMessagesCount()){
         var data = {messages: babble.messages.slice(counter), counter: babble.getMessagesCount()};
         babble.messageRequests[req.headers.sender] = res;
         
@@ -138,6 +138,7 @@ app.get('/messages', function(req, res){
 });
 
 app.post('/user', function(req, res){
+    babble.users++;
     if(req.body.data && (req.body.data.email != "")){
         var sentByme = babble.getMessagesByMe(req.body.data.email);
         app.success({id: babble.id++, byMe: sentByme}, res);
@@ -147,9 +148,9 @@ app.post('/user', function(req, res){
         var sentByme = babble.getMessagesByMyID(req.headers.sender);
         app.success({id: babble.id++, byMe: sentByme}, res);
     }
-    setTimeout(function() {
+
         app.relaseStats();
-    }, 2000);
+   
     
 });
 
@@ -179,7 +180,7 @@ app.delete('/messages/:id', function(req, res){
         byId = babble.getMessagesByMyID(req.headers.sender).indexOf(id) !== -1;
     if(byEmail || byId){
         messages.deleteMessage(id);
-        app.relaseMessages('remove', id);
+        // app.relaseMessages('remove', id);
         console.log('delete '+ req.params.id);
         app.success({id: req.params.id},res);
     }else{
@@ -191,6 +192,9 @@ app.delete('/logout/:id', function(req, res){
     var id = req.params.id;
 
     console.log('log out: ',id);
+    
+    if(babble.messageRequests[id] != undefined)
+        babble.users--;
     babble.removeClient(id);
     app.relaseStats();
     app.success("",res);

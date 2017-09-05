@@ -1,6 +1,6 @@
 module.exports = {
     messages: [],
-    users: [],
+    users: 0,
     urls: {
         messages: '/messages',
         stats: '/stats',
@@ -20,10 +20,14 @@ module.exports = {
     userGoneTimeOut: 3000,
     port: 9000,
     getUserCount(){
-        var msgReq = Object.keys(this.messageRequests).length;
-        var staReq = Object.keys(this.statsRequests).length;
-
-        return Math.max(msgReq,staReq);
+        return this.users;
+    },
+    getRsponseMap(path){
+        if(path == this.urls.messages)
+            return this.messageRequests;
+        if(path == this.urls.stats)
+            return this.statsRequests;
+        return undefined;
     },
     getMessagesCount(){
         return this.messages.length;

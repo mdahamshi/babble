@@ -19,7 +19,6 @@ var Babble = {
     currentMessage: "",
     counter: 0,
     timeout: 10000,
-    statsTimout: 13000,
     apiUrl: 'http://localhost:9000',
     lastSentMessage: null,
     showingInfo: false,
@@ -79,12 +78,12 @@ var Babble = {
     getMessagesResponse(data){
         if(! data)
             return;
-        if(data.type == 'remove'){
-            this.removeMessage(data.id);
-            this.counter--;
-            this.getMessages();
-            return;
-        }
+        // if(data.type == 'remove'){
+        //     this.removeMessage(data.id);
+        //     this.counter--;
+        //     this.getMessages();
+        //     return;
+        // }
         // if(this.counter !== 0 )
         //     this.showInfo('New ! ',"got new "+ 
         // (data.counter - this.counter == 1 ? 'message':(data.counter - this.counter) + ' messages'),
@@ -136,7 +135,7 @@ var Babble = {
             method: 'GET',
             header:[this.userCount,this.messageCount],
             path: this.urls.stats,
-            timeout: this.statsTimout,
+            timeout: this.timeout + 3000,  //delay from getmessage, so this user be counted
         }).then(callback);
     },
     getStatsResponse(data){
@@ -185,7 +184,6 @@ var Babble = {
 
         var show = () => {
             bar.style.padding = '6px';
-            console.log(bar.scrollHeight + 12 )
             bar.style.height = bar.scrollHeight + 12 + 'px';
         };
         var hide = () => {
