@@ -264,6 +264,8 @@ var Babble = {
                     status: this.status,
                     statusText: xhr.statusText
                 });
+                if(options.path == Babble.urls.getMessages)
+                    Babble.getMessages();
             };    
             xhr.onload = function() {
                 if(this.status >=200 && this.status < 300)
