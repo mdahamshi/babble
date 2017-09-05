@@ -30,6 +30,16 @@ app.success = function (data, res, removeClient)  {
         console.log('app.success err: ',err, res);
     }
 };
+setInterval(function(){
+    for(sender in babble.messageRequests) {
+        if(babble.messageRequests[sender] == -1 || babble.messageRequests[sender] == undefined)
+            if(babble.statsRequests[sender] == -1 || babble.statsRequests[sender] == undefined){
+                babble.removeClient(sender);
+                app.relaseStats();
+            }
+    }
+},babble.cleaningInterval);
+
 app.use(express.static(parent +  'client/'));
 app.all('*', function(req, res, next) {
     // res.header("Access-Control-Allow-Origin", "*");

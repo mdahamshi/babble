@@ -11,6 +11,7 @@ module.exports = {
 
     },
     messageRequests: {},
+    cleaningInterval: 300000,  //5 minute
     statsRequests: {},
     imageSize: 36,
     inRelaseMsg: false,
