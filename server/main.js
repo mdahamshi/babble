@@ -42,13 +42,13 @@ app.all('*', function(req, res, next) {
     //     babble.messageRequests[req.headers.sender] = res;
     // }
 
-    if(req.path !== babble.urls.signin)
-        if(req.headers.sender)
-            if(babble.messageRequests[req.headers.sender] === undefined){
-                res.writeHead(400);
-                res.end("The entered query \""+ req.query.counter + "\" is bad." );
-                return;
-            }
+    // if(req.path !== babble.urls.signin)
+    //     if(req.headers.sender)
+    //         if(babble.messageRequests[req.headers.sender] === undefined){
+    //             res.writeHead(400);
+    //             res.end("The entered query \""+ req.query.counter + "\" is bad." );
+    //             return;
+    //         }
     if(req.path == babble.urls.stats || (req.path == babble.urls.messages && req.method == 'GET'))
     req.on('close', function() {
         console.log('closed ', req.path,' method ',req.method);     
@@ -186,7 +186,7 @@ app.get('/messages', function(req, res){
 app.post('/user', function(req, res){
     if(req.body.data && (req.body.data.email != "")){
         var sentByme = babble.getMessagesByMe(req.body.data.email);
-        babble.messageRequests[babble.id] = -1;
+        // babble.messageRequests[babble.id] = -1;
         app.success({id: babble.id++, byMe: sentByme}, res);
 
     }

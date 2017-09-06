@@ -103,6 +103,7 @@ var Babble = {
     postMessage(message, callback = this.postMessageResponse.bind(this)){
         if(message.message.trim() == "")
             return;
+        this.disableSend();
         console.log(this.formatDate(),'post message');        
         this.sendRequest({
             method: 'POST',
@@ -184,6 +185,7 @@ var Babble = {
         
         this.sentMessages.push(parseInt(data.id));
         this.resetMessage();
+        this.enableSend();
         // this.appendMessage(lastSentMessage, data.id);
     },
     getImageUrl(){
@@ -456,7 +458,7 @@ var Babble = {
         var name = message.name || 'Anonymous', email = message.email, 
         text = message.message, 
         time = this.formatDate(new Date(message.timestamp), false) ,
-        image = this.urls.anonymousImage;
+        image = this.urls.anonymousImage, msgTab = this.tab++, delTab = this.tab++;
         
         if(message.image)
             image = message.image;
@@ -472,7 +474,7 @@ var Babble = {
                     ${time}
                 </span>
                 <div  message="${id}" class="bab-Tooltip bab-Message-delete bab-u-hidden " onclick="Babble.deleteMessage(this.getAttribute('message'))">
-                <button aria-label="delete button" class="bab-Message-deleteButton">
+                <button aria-label="delete button" class="bab-Message-deleteButton" tabindex="${delTab}">
                 <img message="${id}" src="images/del.png" alt="delete button" >
                 </button>
                     <span message="${id}" class="bab-Tooltiptext ">Click to delete</span>
@@ -486,7 +488,8 @@ var Babble = {
            `
         
         var li = document.createElement('li');
-        li.setAttribute('message', id)
+        li.setAttribute('message', id);
+        li.setAttribute('tabindex', msgTab);
         li.classList.add('bab-Message','bab-u-slide-fade');
 
         
@@ -513,6 +516,8 @@ var Babble = {
             li.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
         }
         li.addEventListener('mouseover', this.messageMouseOver);
+        li.addEventListener('focus', this.messageMouseOver);
+        li.addEventListener('blur', this.messageMouseLeave);
         li.addEventListener('mouseleave', this.messageMouseLeave);
         
     },
