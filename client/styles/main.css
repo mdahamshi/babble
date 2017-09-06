@@ -299,7 +299,7 @@ nav {
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;
-        outline: none;
+        /* outline: none; */
         cursor: pointer;
         background-color: rgba(0, 0, 0, 0)
     }
@@ -387,6 +387,7 @@ nav {
         display: flex;
         /* margin-top: 8px; */
         height: 0;
+        outline: none;
         overflow: hidden;
         
     }

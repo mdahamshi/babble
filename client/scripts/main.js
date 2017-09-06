@@ -16,13 +16,13 @@ var Babble = {
 
     },
     inReset: false,
-    reconnectTime: 30000,
+    reconnectTime: 3000,
     reconnectID: 0,
     tab: 10,
     sentMessages: new Array(),
     currentMessage: "",
     counter: 0,
-    timeout: 60000,
+    timeout: 6000,
     apiUrl: 'http://localhost:9000',
     lastSentMessage: null,
     showingInfo: false,
@@ -324,6 +324,7 @@ var Babble = {
         while(this.messageList.hasChildNodes())
             this.messageList.removeChild(this.messageList.lastChild);
         this.sentMessages = new Array();
+        this.tab = 10;
         this.messageList = document.querySelector('#bab-messageList');
         this.counter = 0;
     },
@@ -482,7 +483,7 @@ var Babble = {
                     ${time}
                 </span>
                 <div  message="${id}" class="bab-Tooltip bab-Message-delete bab-u-hidden " onclick="Babble.deleteMessage(this.getAttribute('message'))">
-                <button aria-label="delete button" class="bab-Message-deleteButton" tabindex="${delTab}">
+                <button message="${id}" aria-label="delete button" class="bab-Message-deleteButton" tabindex="${delTab}">
                 <img message="${id}" src="images/del.png" alt="delete button" >
                 </button>
                     <span message="${id}" class="bab-Tooltiptext ">Click to delete</span>
@@ -523,29 +524,45 @@ var Babble = {
             li.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
             li.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
         }
+        var delButton = li.querySelector('.bab-Message-deleteButton');
+        delButton.addEventListener('focus',this.messageMouseOver);
+        delButton.addEventListener('blur',this.messageMouseLeave);
         li.addEventListener('mouseover', this.messageMouseOver);
         li.addEventListener('focus', this.messageMouseOver);
         li.addEventListener('blur', this.messageMouseLeave);
         li.addEventListener('mouseleave', this.messageMouseLeave);
         
     },
+    
     messageMouseOver(evt){
-        if(evt.target !== evt.currentTarget){
-            var id = evt.currentTarget.getAttribute('message');
-            evt.currentTarget.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
+        if(evt instanceof MouseEvent){
+            if(evt.target !== evt.currentTarget){
+                var id = evt.currentTarget.getAttribute('message');
+                evt.currentTarget.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
+                if(Babble.sentByMe(id)){
+                    evt.currentTarget.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
+                    evt.currentTarget.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
+                }       
+            }   
+            evt.stopPropagation(); 
+        }else if(evt instanceof FocusEvent){
+            var id = this.getAttribute('message');
+            var li = Babble.messageList['message-' + id];
+            li.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
             if(Babble.sentByMe(id)){
-                evt.currentTarget.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
-                evt.currentTarget.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
-            }       
-        }   
-        evt.stopPropagation(); 
+                li.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
+                li.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
+            }  
+            evt.stopPropagation();    
+        }
 
     },
     messageMouseLeave(evt){
         var id = evt.currentTarget.getAttribute('message');
-        evt.currentTarget.querySelector('.bab-Message-div').style.backgroundColor = 'white';
+        var li = Babble.messageList['message-' + id];
+       li.querySelector('.bab-Message-div').style.backgroundColor = 'white';
         if(Babble.sentByMe(id))
-            evt.currentTarget.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
+           li.querySelector('.bab-Message-delete').classList.add('bab-u-semiHidden');
     },
     removeMessage(id){
         var li = this.messageList['message-' + id];
@@ -577,6 +594,7 @@ window.onload = function(){
 window.onblur = function(){
     if(Babble.registered)
         Babble.updateLocalStorage();
+
 };
 window.onresize = function(){
     Babble.scrollMessageSection();
