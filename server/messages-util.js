@@ -19,7 +19,7 @@ module.exports = {
 
         return requiredMessages;
     },
-
+    
     deleteMessage(id){
         //delet message with ID=id
         for(var i = 0; i < babble.messages.length; i++){

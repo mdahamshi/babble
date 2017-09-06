@@ -16,7 +16,8 @@ var Babble = {
 
     },
     inReset: false,
-    reconnectTime: 3000,
+    reconnectTime: 30000,
+    reconnectID: 0,
     tab: 10,
     sentMessages: new Array(),
     currentMessage: "",
@@ -52,6 +53,7 @@ var Babble = {
             this.sentMessages = data.byMe;
             if(this.registered)
                 this.updateLocalStorage();
+            this.enableSend();
             this.getMessages(0);
             this.getStats();
         }.bind(this));
@@ -112,15 +114,18 @@ var Babble = {
         }).then(callback);
     },
     signIn(callback  = this.signInRes.bind(this)){
+        console.log(this.formatDate(),'sign in ');    
         this.sendRequest({
             method: 'POST',
             path: this.urls.signin,
             data: this.userInfo,
-        }).then(callback).then(this.enableSend);
+        }).then(callback);
     },
     signInRes(data){
         if(! data)
             return;
+        clearInterval(this.reconnectID);
+        this.enableSend();
         this.id = data.id;
         this.sentMessages = data.byMe;
         this.showInfo('Success','Connection returned.','info');
@@ -292,8 +297,10 @@ var Babble = {
                 Babble.disableSend();
                 Babble.reset();
                 Babble.showInfo('Error',"something went wrong, trying to reconnect...",'error');
-                
-                Babble.delay(Babble.signIn,Babble.reconnectTime);
+                Babble.signIn();                
+                Babble.reconnectID = setInterval(function(){
+                    Babble.signIn();
+                },Babble.reconnectTime);
             };    
             xhr.onload = function() {
                 if(this.status >=200 && this.status < 300)
@@ -330,6 +337,7 @@ var Babble = {
             this.signIn(function (data) {          
                 this.id = data.id;
                 this.sentMessages = data.byMe;
+                this.enableSend();
                 this.getMessages(0);
                 this.getStats();
             }.bind(this));

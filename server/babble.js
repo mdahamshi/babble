@@ -10,9 +10,10 @@ module.exports = {
         imageUrl: 'https://www.gravatar.com/avatar/'
 
     },
-    messageRequests: {},
+    messageRequests: [],
     cleaningInterval: 300000,  //5 minute
-    statsRequests: {},
+    statsRequests: [],
+    reqId: 1,
     imageSize: 36,
     inRelaseMsg: false,
     inRelaseStt: false,
@@ -45,20 +46,32 @@ module.exports = {
             return hours + ':' + minutes;
     },
     getStatResLength(){
-        return Object.keys(this.statsRequests).length;
+        return this.statsRequests.length;
     },
     getMessagesResLength(){
-        return Object.keys(this.messageRequests).length;
+        return this.messageRequests.length;
     },
     removeClient(id){
-        delete this.statsRequests[id];
-        delete this.messageRequests[id];        
+
+        this.removeMessageRes(id);
+        this.removeStatsRes(id);        
     },
+    //closed request most likely the oldest, so we start from the begining
     removeStatsRes(id){
-        delete this.statsRequests[id];
+        for(var i = 0; i < this.statsRequests.length; i++)
+            if(this.statsRequests[i] && this.statsRequests[i].req.id === id){
+                this.statsRequests.splice(i,1);
+                console.log('removed closed stats req ',id);
+                return;
+            }
     },
     removeMessageRes(id){
-        delete this.messageRequests[id];
+        for(var i = 0; i < this.messageRequests.length; i++)
+            if(this.messageRequests[i] && this.messageRequests[i].req.id === id){
+                this.messageRequests.splice(i,1);
+                console.log('removed closed msg req ',id);
+                return;
+            }
     },
     getMessagesByMe(email){
         return this.messages.filter((msg) => {
