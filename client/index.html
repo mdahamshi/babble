@@ -44,9 +44,9 @@
                 <form action="" class="bab-SendMessage-form ">
                     <div class="bab-Growable js-growable">
                          <pre class="bab-Growable-pre"><span id="bab-sendMessage-span" ></span><br></pre>
-                         <textarea name="newMessage" aria-label="type a message" placeholder="Babble a message !" id="bab-sendMessage-textarea" cols="30" rows="1" class="bab-SendMessage-form-textarea bab-Growable-textarea"></textarea>
+                         <textarea name="newMessage" autofocus aria-label="type a message" placeholder="Babble a message !" id="bab-sendMessage-textarea" cols="30" rows="1" class="bab-SendMessage-form-textarea bab-Growable-textarea"></textarea>
                     </div>
-                    <button id="bab-sendMessageButton" tabindex="1000" class="bab-SendMessage-form-button" aria-label="Send Button" type="button" onclick="Babble.sendMessage()">
+                    <button id="bab-sendMessageButton" disabled tabindex="1000" class="bab-SendMessage-form-button" aria-label="Send Button" type="button" onclick="Babble.sendMessage()">
                         <img src="images/send.png" alt="Send Button" class="bab-SendMessage-form-button-img">
                     </button>
                 </form>

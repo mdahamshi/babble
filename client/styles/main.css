@@ -74,6 +74,7 @@ nav {
     height: 100px;
     left: 0;
 }
+
 .bab-MainHeader-img {
     height: 70%;
     margin-top: 15px;
@@ -125,6 +126,9 @@ nav {
     min-width: 100px;
     max-height: 300px;
     overflow: hidden;
+}
+.bab-SendMessage-form-button-img{
+    opacity: 0.4;
 }
 .bab-Growable-textarea,
 .bab-Growable-pre {

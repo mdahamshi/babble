@@ -15,6 +15,8 @@ var Babble = {
         anonymousImage: 'images/null.png',
 
     },
+    inReset: false,
+    reconnectTime: 3000,
     tab: 10,
     sentMessages: new Array(),
     currentMessage: "",
@@ -101,18 +103,29 @@ var Babble = {
     postMessage(message, callback = this.postMessageResponse.bind(this)){
         if(message.message.trim() == "")
             return;
+        console.log(this.formatDate(),'post message');        
         this.sendRequest({
             method: 'POST',
             path: this.urls.messages,
             data: message
         }).then(callback);
     },
-    signIn(callback  = this.logData){
+    signIn(callback  = this.signInRes.bind(this)){
         this.sendRequest({
             method: 'POST',
             path: this.urls.signin,
             data: this.userInfo,
-        }).then(callback);
+        }).then(callback).then(this.enableSend);
+    },
+    signInRes(data){
+        if(! data)
+            return;
+        this.id = data.id;
+        this.sentMessages = data.byMe;
+        this.showInfo('Success','Connection returned.','info');
+        this.inReset = false;
+        this.getMessages(0);
+        this.getStats();
     },
     deleteMessage(id, callback  = this.deleteMessageResponse.bind(this)){
         this.sendRequest({
@@ -261,14 +274,24 @@ var Babble = {
             }
           
             xhr.onerror = function(){
+                
                 reject({
                     status: this.status,
                     statusText: xhr.statusText
                 });
-                if(options.path == Babble.urls.getMessages + Babble.counter)
-                    Babble.getMessages();
-                if(options.path == Babble.urls.stats)
-                    Babble.getStats()
+                // if(options.path == Babble.urls.getMessages + Babble.counter)
+                //     Babble.getMessages();
+                // if(options.path == Babble.urls.stats)
+                //     Babble.getStats()
+                if(Babble.inReset)
+                    return;
+                Babble.inReset = true;
+                xhr.abort();
+                Babble.disableSend();
+                Babble.reset();
+                Babble.showInfo('Error',"something went wrong, trying to reconnect...",'error');
+                
+                Babble.delay(Babble.signIn,Babble.reconnectTime);
             };    
             xhr.onload = function() {
                 if(this.status >=200 && this.status < 300)
@@ -288,7 +311,13 @@ var Babble = {
             
         }).catch(this.logData);
     },
-
+    reset(){
+        while(this.messageList.hasChildNodes())
+            this.messageList.removeChild(this.messageList.lastChild);
+        this.sentMessages = new Array();
+        this.messageList = document.querySelector('#bab-messageList');
+        this.counter = 0;
+    },
     init(){
 
         if (Storage && (localStorage.getItem('babble') === null)){
@@ -381,6 +410,14 @@ var Babble = {
             this.scrollMessageSection();
         }.bind(this));
         
+    },
+    disableSend(){
+        document.getElementById('bab-sendMessageButton').setAttribute('disabled', 'true');
+        document.querySelector('.bab-SendMessage-form-button-img').style.opacity = 0.4;
+    },
+    enableSend(){
+        document.getElementById('bab-sendMessageButton').removeAttribute('disabled');
+        document.querySelector('.bab-SendMessage-form-button-img').style.opacity = 1;
     },
     updateLocalStorage(){
         if(this.registered === false)
