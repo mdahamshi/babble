@@ -16,13 +16,13 @@ var Babble = {
 
     },
     inReset: false,
-    reconnectTime: 3000,
+    reconnectTime: 6000,
     reconnectID: 0,
     tab: 10,
     sentMessages: new Array(),
     currentMessage: "",
     counter: 0,
-    timeout: 6000,
+    timeout: 25000,
     apiUrl: 'http://localhost:9000',
     lastSentMessage: null,
     showingInfo: false,
@@ -97,6 +97,8 @@ var Babble = {
         //     'success' , 1000);
         this.counter = data.counter;
         data.messages.forEach(function (msg) {
+            if((msg.message.email !== "") && (msg.message.email == this.email) && (! this.sentByMe(msg.id) )  )//in case user signed in from two browsers
+                this.sentMessages.push(msg.id);
             this.appendMessage(msg.message, msg.id);
         }.bind(this));
         this.delay(this.scrollMessageSection,1000);
@@ -112,6 +114,25 @@ var Babble = {
             path: this.urls.messages,
             data: message
         }).then(callback);
+    },
+    postMessageWrap(callback, text){
+        if(this.currentMessage.trim() == "")
+            return;
+        this.postMessage({
+            name: this.getName(),
+            email: this.userInfo.email,
+            message: this.currentMessage,
+            timestamp: Date.now()
+        },callback);
+    },
+    postMessageResponse(data){
+        if(! data)
+            return;
+        
+        this.sentMessages.push(parseInt(data.id));
+        this.resetMessage();
+        this.enableSend();
+        // this.appendMessage(lastSentMessage, data.id);
     },
     signIn(callback  = this.signInRes.bind(this)){
         console.log(this.formatDate(),'sign in ');    
@@ -184,15 +205,7 @@ var Babble = {
     getName(){
         return this.userInfo.name || "Anonymous";
     },
-    postMessageResponse(data){
-        if(! data)
-            return;
-        
-        this.sentMessages.push(parseInt(data.id));
-        this.resetMessage();
-        this.enableSend();
-        // this.appendMessage(lastSentMessage, data.id);
-    },
+
     getImageUrl(){
 
         return this.urls.anonymousImage;
@@ -230,16 +243,7 @@ var Babble = {
         this.delay(classHidden, time + 1000);
         
     },
-    postMessageWrap(callback, text){
-        if(this.currentMessage.trim() == "")
-            return;
-        this.postMessage({
-            name: this.getName(),
-            email: this.userInfo.email,
-            message: this.currentMessage,
-            timestamp: Date.now()
-        },callback);
-    },
+
 
     validateRegister(name, email){
         email = email.trim();
@@ -263,20 +267,22 @@ var Babble = {
             xhr.setRequestHeader('Content-type', options.content || 'application/json; charset=utf-8');        
             if(Babble.id)
                 xhr.setRequestHeader('sender', Babble.id);
-            if(options.path === Babble.urls.stats){
-                xhr.setRequestHeader('users', options.header[0]);
-                xhr.setRequestHeader('messages', options.header[1]);
-            }
+            
             if(options.path == Babble.urls.getMessages + Babble.counter){
                 console.log('in message rout')
                 xhr.addEventListener('timeout', function(){
                     console.log('getmessage timeout')
+                    xhr.abort();
                     Babble.getMessages();
                 });
             }else if(options.path == Babble.urls.stats){
+                xhr.setRequestHeader('users', options.header[0]);
+                xhr.setRequestHeader('messages', options.header[1]);
                 xhr.addEventListener('timeout', function(){
                     console.log('getstats timeout');
+                    xhr.abort();
                     Babble.getStats();
+
                 });
             }
           
@@ -535,17 +541,7 @@ var Babble = {
     },
     
     messageMouseOver(evt){
-        if(evt instanceof MouseEvent){
-            if(evt.target !== evt.currentTarget){
-                var id = evt.currentTarget.getAttribute('message');
-                evt.currentTarget.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
-                if(Babble.sentByMe(id)){
-                    evt.currentTarget.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
-                    evt.currentTarget.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
-                }       
-            }   
-            evt.stopPropagation(); 
-        }else if(evt instanceof FocusEvent){
+        if((evt instanceof MouseEvent && evt.target !== evt.currentTarget) || evt instanceof FocusEvent){
             var id = this.getAttribute('message');
             var li = Babble.messageList['message-' + id];
             li.querySelector('.bab-Message-div').style.backgroundColor = 'rgb(235, 237, 236)';
@@ -553,9 +549,8 @@ var Babble = {
                 li.querySelector('.bab-Message-delete').classList.remove('bab-u-semiHidden');
                 li.querySelector('.bab-Message-delete').classList.remove('bab-u-hidden');
             }  
-            evt.stopPropagation();    
         }
-
+        evt.stopPropagation();    
     },
     messageMouseLeave(evt){
         var id = evt.currentTarget.getAttribute('message');
@@ -573,6 +568,8 @@ var Babble = {
         div.style.transitionDuration = '1000ms';
         // li.classList.add('bab-Message','bab-u-slide-fade','show');
         div.style.backgroundColor = this.alert['error'].back;
+        if(this.sentByMe(id))
+            this.sentMessages.splice(this.sentMessages.indexOf(id),1);
         setTimeout(function() {
             li.classList.remove('bab-u-messageShow');
             setTimeout(function() {
