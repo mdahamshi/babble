@@ -16,7 +16,7 @@ var Babble = {
 
     },
     inReset: false,
-    reconnectTime: 6000,
+    reconnectTime: 10000,
     reconnectID: 0,
     tab: 10,
     sentMessages: new Array(),
@@ -97,7 +97,8 @@ var Babble = {
         //     'success' , 1000);
         this.counter = data.counter;
         data.messages.forEach(function (msg) {
-            if((msg.message.email !== "") && (msg.message.email == this.email) && (! this.sentByMe(msg.id) )  )//in case user signed in from two browsers
+            console.log(msg,(msg.message.email !== "") && (msg.message.email == this.email) );
+            if((msg.message.email !== "") && (msg.message.email == this.userInfo.email) && (! this.sentByMe(msg.id) )  )//in case user signed in from two browsers
                 this.sentMessages.push(msg.id);
             this.appendMessage(msg.message, msg.id);
         }.bind(this));
@@ -147,6 +148,7 @@ var Babble = {
             return;
         clearInterval(this.reconnectID);
         this.enableSend();
+        this.hideLoading();
         this.id = data.id;
         this.sentMessages = data.byMe;
         this.showInfo('Success','Connection returned.','info');
@@ -299,11 +301,12 @@ var Babble = {
                 if(Babble.inReset)
                     return;
                 Babble.inReset = true;
+                Babble.showLoading();
                 xhr.abort();
                 Babble.disableSend();
                 Babble.reset();
                 Babble.showInfo('Error',"something went wrong, trying to reconnect...",'error');
-                Babble.signIn();                
+                Babble.delay(Babble.signIn,5000);               
                 Babble.reconnectID = setInterval(function(){
                     Babble.signIn();
                 },Babble.reconnectTime);
