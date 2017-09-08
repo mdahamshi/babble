@@ -323,8 +323,12 @@ app.use(function(req, res){
 // });
 fs.readFile(babble.dataFile,{encoding: 'utf8'},function(err, data){
     if(err) throw err;
-    var importedMessages = '[' + data.slice(0, -1) + ']';
+    var i = data.length - 1;
+    while(data[i] != ',')
+        i--;
+    var importedMessages = '[' + data.slice(0, i) + ']';
     babble.messages = JSON.parse(importedMessages);
+    babble.messageId = babble.messages.length + 1;
     app.listen(process.env.PORT || babble.port, function(){
         console.log(new Date() + 'listening on port '+ babble.port  + '...');
     // console.log(app._router.stack);
