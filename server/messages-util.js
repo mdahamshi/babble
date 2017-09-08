@@ -3,21 +3,20 @@ var babble = require('./babble');
 var md5 = require('md5');
 module.exports = {
      addMessage(message, sender){
-        var bigMessage = {
-            message: message, 
-            id: parseInt(babble.messageId),
-            sender: sender
-        }
-        if(message.email != "")
-            bigMessage.message.image = babble.urls.imageUrl + md5(message.email) + '?s=' 
+        message.id = parseInt(babble.messageId);
+        message.sender = sender;
+        if(message.email != undefined && message.email !== "")
+            message.image = babble.urls.imageUrl + md5(message.email) + '?s=' 
         + babble.imageSize + '&d=identicon';
-        babble.messages.push(bigMessage);
+        babble.messages.push(message);
         return babble.messageId++;
     },
     
     getMessages(counter){
 
-        return requiredMessages;
+        
+        return babble.messages.slice(counter);
+        
     },
 
     deleteMessage(id){

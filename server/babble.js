@@ -74,8 +74,10 @@ module.exports = {
             }
     },
     getMessagesByMe(email){
+        if(! email || email === "")
+            return [];
         return this.messages.filter((msg) => {
-            return msg.message.email === email;
+            return msg.email === email;
         }).map((msg) => {
             return msg.id;
         });

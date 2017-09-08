@@ -36,6 +36,7 @@ app.use(express.static(parent +  'client/'));
 app.all('*', function(req, res, next) {
     // res.header("Access-Control-Allow-Origin", "*");
     // res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    // res.header('Access-Control-Allow-Headers', 'Content-Type, sender, messages, users');
     // res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
     console.log(req.method,req.path, 'user: ', req.headers.sender)
     // if(req.path === '/messages' && req.method === 'GET'){
@@ -177,7 +178,14 @@ app.get('/messages', function(req, res){
         console.log("err" + counter + req.query);
         res.writeHead(400);
         res.end("The entered query \""+ req.query.counter + "\" is bad." );
+        return;
     } 
+    if(counter === 0){
+        var data = {messages: babble.messages, counter: babble.getMessagesCount()};
+        
+        app.success(data, res);
+        return;
+    }
     if(counter < babble.getMessagesCount()){
         var data = {messages: babble.messages.slice(counter), counter: babble.getMessagesCount()};
         
@@ -193,7 +201,7 @@ app.get('/messages', function(req, res){
 });
 
 app.post('/user', function(req, res){
-    if(req.body.data && (req.body.data.email != "")){
+    if(req.body.data && (req.body.data.email != undefined)){
         var sentByme = babble.getMessagesByMe(req.body.data.email);
         // babble.messageRequests[babble.id] = -1;
         app.success({id: babble.id++, byMe: sentByme}, res);

@@ -27,10 +27,10 @@
                 <h1 class="bab-Main-header-h1">Vegans</h1>
 
                 <dl class="bab-Main-header-dl">
-                    <dt class="bab-Main-header-dl-dt"><img src="images/msg.png" alt="Number Of Messages"></dt>
+                    <dt class="bab-Tooltip bab-Main-header-dl-dt"><img src="images/msg.png" alt="Number Of Messages"><span class="bab-Tooltiptext">Number of Messages</span></dt>
                     <dd id="bab-messageCount" class="bab-Main-header-dl-dd">0</dd>
 
-                    <dt class="bab-Main-header-dl-dt"><img src="images/users.png" alt="Number Of Users" ></dt>
+                    <dt class="bab-Tooltip bab-Main-header-dl-dt"><img src="images/users.png" alt="Number Of Users" ><span class="bab-Tooltiptext">Number of connected users</span></dt>
                     <dd id="bab-userCount" class="bab-Main-header-dl-dd">0</dd>
 
                 </dl>
@@ -44,10 +44,11 @@
                 <form action="" class="bab-SendMessage-form ">
                     <div class="bab-Growable js-growable">
                          <pre class="bab-Growable-pre"><span id="bab-sendMessage-span" ></span><br></pre>
-                         <textarea name="newMessage" autofocus aria-label="type a message" placeholder="Babble a message !" id="bab-sendMessage-textarea" cols="30" rows="1" class="bab-SendMessage-form-textarea bab-Growable-textarea"></textarea>
+                         <textarea name="newMessage" tabindex="9999" autofocus aria-label="type a message" placeholder="Babble a message !" id="bab-sendMessage-textarea" cols="30" rows="1" class="bab-SendMessage-form-textarea bab-Growable-textarea"></textarea>
                     </div>
-                    <button id="bab-sendMessageButton" disabled tabindex="1000" class="bab-SendMessage-form-button" aria-label="Send Button" type="button" onclick="Babble.sendMessage()">
+                    <button id="bab-sendMessageButton" disabled tabindex="10000" class="bab-Tooltip bab-SendMessage-form-button" aria-label="Send Button" type="button" onclick="Babble.sendMessage()">
                         <img src="images/send.png" alt="Send Button" class="bab-SendMessage-form-button-img">
+                        <span class="bab-Tooltiptext">Click to send the message</span>
                     </button>
                 </form>
             </div>
@@ -71,7 +72,7 @@
                 <span class="bab-u-wrap"></span>
 
                 <div class="bab-Modal-buttons">
-                    <button class="bab-Modal-cancel bab-u-flatButton"  type="button" onclick="Babble.register({name: '', email: ''},'anonymous')">Stay Anonymous</button>
+                    <button class="bab-Modal-cancel bab-u-flatButton"  type="button" onclick="Babble.register()">Stay Anonymous</button>
                     <button  id="bab-modal-submit" class="bab-Modal-submit bab-u-flatButton" type="button" onclick="Babble.register({name:Babble.$('#modal-name').value, email:Babble.$('#modal-email').value })">Save</button>
                 </div>
             </form>
@@ -80,5 +81,6 @@
             <img src="images/loading.gif" class="bab-Loading-img" alt="loading the app"/>
         </div>
         <script src="scripts/main.js"></script>        
+        <script src="scripts/window.js"></script>     
 </body>
 </html>

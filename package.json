@@ -9,15 +9,17 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
-    "md5": "^2.2.1",
-    "sinon": "^3.2.1"
+    "md5": "^2.2.1"
+
   },
   "devDependencies": {
-    "mocha": "^3.5.0"
+    "mocha": "^3.5.0",
+    "sinon": "^3.2.1",
+    "chai": "^4.1.2"
   },
   "scripts": {
-    "start": "node server/main.js",
-    "test": "mocha"
+    "start": "http-server client/ -p 8080 & node server/main.js" ,
+    "test": "./node_modules/.bin/mocha test/server/test.js --reporter spec & http-server -p 8081"
   },
   "repository": {
     "type": "git",

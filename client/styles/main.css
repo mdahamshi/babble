@@ -478,7 +478,7 @@ nav {
      .bab-Tooltip:hover  .bab-Tooltiptext {
         visibility: visible;
     }
-    .bab-Message-deleteButton:focus .bab-Tooltiptext{
+    .bab-Tooltip:focus .bab-Tooltiptext{
         visibility: visible;
     }
     .bab-InfoBar{
