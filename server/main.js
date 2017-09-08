@@ -95,7 +95,7 @@ app.relaseStats = function(){
                 }
                 res.end(JSON.stringify(data));
             }
-        }, 500);
+        }, 800);
     }catch(err){
         console.log('relase stat err ',err);
     }finally{
@@ -160,6 +160,11 @@ app.on('AssertUser', function (id) {
     //         console.log('user still alive');
     // }.bind(this), babble.userGoneTimeOut);
   });
+app.options('*', function(req, res){
+    console.log('options request');
+    res.writeHead(204);
+    res.end();
+});
 app.get('/', function (req, res) {
    
     fs.readFile(parent +  'client/index.html', 'utf8', function(err, data){
@@ -169,6 +174,7 @@ app.get('/', function (req, res) {
         res.end(data);
     });
 });
+
 
 app.get('/messages', function(req, res){
     var counter = req.query.counter;
@@ -180,12 +186,12 @@ app.get('/messages', function(req, res){
         res.end("The entered query \""+ req.query.counter + "\" is bad." );
         return;
     } 
-    if(counter === 0){
-        var data = {messages: babble.messages, counter: babble.getMessagesCount()};
+    // if(counter === 0){
+    //     var data = {messages: babble.messages, counter: babble.getMessagesCount()};
         
-        app.success(data, res);
-        return;
-    }
+    //     app.success(data, res);
+    //     return;
+    // }
     if(counter < babble.getMessagesCount()){
         var data = {messages: babble.messages.slice(counter), counter: babble.getMessagesCount()};
         
@@ -222,7 +228,7 @@ app.post('/messages', function(req, res){
     //     console.log(data['data']);
     // });
     
-    var msg = req.body.data;
+    var msg = req.body;
 
     var msgId = messages.addMessage(msg, req.headers.sender);
     console.log(babble.messages[babble.getMessagesCount()-1]);
@@ -279,11 +285,7 @@ app.get('/stats', function(req, res){
         console.log('pushed stat res ',Object.keys(babble.statsRequests).length);
     }
 });
-app.options('*', function(req, res){
-    console.log('options request');
-    res.writeHead(204);
-    res.end();
-});
+
 
 
 app.use(function(req, res){

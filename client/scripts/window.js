@@ -1,10 +1,14 @@
 window.onload = function(){
+    console.log('window load')
+    if(localStorage.getItem('babble') == null)
+        localStorage.setItem('babble',JSON.stringify({userInfo:{email:"", name:""}, currentMessage:""}));
     window.Babble.init();
 
 };
 window.onblur = function(){
-    if(window.Babble.registered)
-        window.Babble.updateLocalStorage();
+
+    window.Babble.updateLocalStorage();
+    
 
 };
 window.onresize = function(){
@@ -14,8 +18,8 @@ window.onresize = function(){
 
 
 window.onbeforeunload = function(){
-    if(window.Babble.registered)
-        window.Babble.updateLocalStorage();
+    
+    window.Babble.updateLocalStorage();
     window.Babble.logOut();
     // return msg;
 };
