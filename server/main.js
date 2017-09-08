@@ -6,6 +6,7 @@ var fs = require('fs');
 var app = express();
 var parent = __dirname.split('server')[0];
 var bodyParser = require("body-parser");
+
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -80,7 +81,7 @@ app.all('*', function(req, res, next) {
     next();
    });
 
-app.relaseStats = function(){
+app.relaseStats = function(users){
     if(babble.inRelaseStt)
         return;
     babble.inRelaseStt = true;
@@ -142,7 +143,7 @@ app.relaseMessages = function(type, id ){
         
     }finally {
         babble.inRelaseMsg = false;
-        app.relaseStats();
+        app.relaseStats(babble.getUserCount());
         
     }
 };
@@ -218,7 +219,7 @@ app.post('/user', function(req, res){
         app.success({id: babble.id++, byMe: sentByme}, res);
     }
 
-        app.relaseStats();
+        app.relaseStats(babble.getUserCount());
    
     
 });
@@ -227,12 +228,21 @@ app.post('/messages', function(req, res){
     // req.on('data', function(){
     //     console.log(data['data']);
     // });
+    try{    
+        var msg = req.body;
+     
+        var msgId = messages.addMessage(msg, req.headers.sender);
+        fs.appendFile(babble.dataFile,JSON.stringify(babble.messages[babble.messages.length - 1]) + ',',function (err) {
+            if (err) throw err;
+            console.log('Saved!');
+        });
+        console.log(babble.messages[babble.getMessagesCount()-1]);
+        app.success({id: msgId},res);
+        console.log(JSON.stringify(msg) + ',');
+    }catch(err){
+        console.log(err);
+    }
     
-    var msg = req.body;
-
-    var msgId = messages.addMessage(msg, req.headers.sender);
-    console.log(babble.messages[babble.getMessagesCount()-1]);
-    app.success({id: msgId},res);
     app.relaseMessages();
 
 
@@ -266,7 +276,7 @@ app.delete('/logout/:id', function(req, res){
     
 
     babble.removeClient(id);
-    app.relaseStats();
+    app.relaseStats(babble.getUserCount());
     app.success("",res);
 });
 app.get('/stats', function(req, res){
@@ -311,11 +321,18 @@ app.use(function(req, res){
 // app.delete('*', function(req, res){
 //     console.log('delete req unknown', req.url);
 // });
-app.listen(process.env.PORT || babble.port, function(){
-    console.log(new Date() + 'listening on port '+ babble.port  + '...');
-// console.log(app._router.stack);
+fs.readFile(babble.dataFile,{encoding: 'utf8'},function(err, data){
+    if(err) throw err;
+    var importedMessages = '[' + data.slice(0, -1) + ']';
+    babble.messages = JSON.parse(importedMessages);
+    app.listen(process.env.PORT || babble.port, function(){
+        console.log(new Date() + 'listening on port '+ babble.port  + '...');
+    // console.log(app._router.stack);
+    
+    });
+    return;
+}.bind(this));
 
-});
 // setInterval(function(){
 //     for(sender in babble.messageRequests) {
 //         if(babble.messageRequests[sender] == -1 || babble.messageRequests[sender] == undefined)

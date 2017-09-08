@@ -214,8 +214,12 @@ window.Babble = {
     },
     
     showInfo(head, text,type = 'info', time=4000){
-        if(this.showingInfo)
+        if(this.showingInfo){
+            setTimeout(() => {
+                this.showInfo(head, text, type, time);
+            }, time);
             return;
+        }
         this.showingInfo = true;
         document.getElementById('bab-infobar-head').innerHTML = head + ":";
         document.getElementById('bab-infobar-text').innerHTML = text;

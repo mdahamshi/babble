@@ -14,6 +14,7 @@ module.exports = {
     cleaningInterval: 300000,  //5 minute
     statsRequests: [],
     reqId: 1,
+    dataFile: __dirname  + '/data/data.json',
     imageSize: 36,
     inRelaseMsg: false,
     inRelaseStt: false,
