@@ -9,23 +9,13 @@ var bodyParser = require("body-parser");
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.success = function (data, res, removeClient)  {
+app.success = function (data, res)  {
     if(! res.writeHead)
         return;
     try{
-        // if(removeClient){
-        //     var path = res.req._parsedOriginalUrl.pathname,
-        //     sender = res.req.headers.sender;
-        // }
         res.writeHead(200);
         res.end(JSON.stringify(data));
-        // if(removeClient){
-        
-        //     if(path == babble.urls.messages)
-        //         babble.removeMessageRes(sender);
-        //     else if(path == babble.urls.stats)
-        //         babble.removeStatsRes(sender);
-        // }
+
     }catch(err){
         console.log('app.success err: ',err, res);
     }
@@ -39,35 +29,7 @@ app.all('*', function(req, res, next) {
     // res.header('Access-Control-Allow-Headers', 'Content-Type, sender, messages, users');
     // res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
     console.log(req.method,req.path, 'user: ', req.headers.sender)
-    // if(req.path === '/messages' && req.method === 'GET'){
-    //     babble.messageRequests[req.headers.sender] = res;
-    // }
-
-    // if(req.path !== babble.urls.signin)
-    //     if(req.headers.sender)
-    //         if(babble.messageRequests[req.headers.sender] === undefined){
-    //             res.writeHead(400);
-    //             res.end("The entered query \""+ req.query.counter + "\" is bad." );
-    //             return;
-    //         }
-    // if(req.path == babble.urls.stats || (req.path == babble.urls.messages && req.method == 'GET'))
-    // req.on('close', function() {
-    //     console.log('closed ', req.path,' method ',req.method);     
-    //     var map = babble.getRsponseMap(req.path);
-    //     if(map){
-    //         if(map[req.headers.sender] !== undefined)
-    //             map[req.headers.sender] = -1;
-    //         setTimeout(function(){
-    //             console.log('in fucking time out',babble.messageRequests[req.headers.sender] === -1 
-    //         ,babble.statsRequests[req.headers.sender] === -1);
-
-    //             if(babble.messageRequests[req.headers.sender] === -1 
-    //                 && babble.statsRequests[req.headers.sender] === -1){
-    //                 babble.removeClient(req.headers.sender);
-    //             }
-    //         }, 4000);
-    //     }   
-    // });
+  
     req.on('close', function(){
         if(req.id){
             if(req.path == babble.urls.messages)
@@ -75,12 +37,13 @@ app.all('*', function(req, res, next) {
             else if(req.path == babble.urls.stats)
                 babble.removeStatsRes(req.id);
         }
+        app.relaseStats();
     });
 
     next();
    });
 
-app.relaseStats = function(){
+app.relaseStats = function(counter = babble.getUserCount()){
     if(babble.inRelaseStt)
         return;
     babble.inRelaseStt = true;
@@ -90,9 +53,9 @@ app.relaseStats = function(){
             while( babble.statsRequests.length > 0) {
                 var res = babble.statsRequests.pop();
                 var data = {
-                    users: babble.getUserCount(),
-                    messages: babble.messages.length,
-                }
+                    users: counter,
+                    messages: babble.messages.length
+                };
                 res.end(JSON.stringify(data));
             }
         }, 800);
@@ -146,20 +109,7 @@ app.relaseMessages = function(type, id ){
         
     }
 };
-app.on('AssertUser', function (id) {
-    // setTimeout(function(){
-    //     babble.removeMessageRes(id);
-        
-    // }.bind(this), 1000);
-    // setTimeout(function(){
-    //     if(babble.messageRequests[id] == undefined){
-    //         console.log("request died");
-    //         babble.removeMessageRes(id);
-    //         app.relaseStats();
-    //     }else
-    //         console.log('user still alive');
-    // }.bind(this), babble.userGoneTimeOut);
-  });
+
 app.options('*', function(req, res){
     console.log('options request');
     res.writeHead(204);
@@ -186,12 +136,7 @@ app.get('/messages', function(req, res){
         res.end("The entered query \""+ req.query.counter + "\" is bad." );
         return;
     } 
-    // if(counter === 0){
-    //     var data = {messages: babble.messages, counter: babble.getMessagesCount()};
-        
-    //     app.success(data, res);
-    //     return;
-    // }
+
     if(counter < babble.getMessagesCount()){
         var data = {messages: babble.messages.slice(counter), counter: babble.getMessagesCount()};
         
@@ -203,7 +148,6 @@ app.get('/messages', function(req, res){
     }
     
 
-    // app.success({messages: toSend}, res);
 });
 
 app.post('/user', function(req, res){
@@ -224,10 +168,6 @@ app.post('/user', function(req, res){
 });
 
 app.post('/messages', function(req, res){
-    // req.on('data', function(){
-    //     console.log(data['data']);
-    // });
-    
     var msg = req.body;
 
     var msgId = messages.addMessage(msg, req.headers.sender);
@@ -236,7 +176,6 @@ app.post('/messages', function(req, res){
     app.relaseMessages();
 
 
-    // console.log(req.connection);
 });
 app.delete('/messages/:id', function(req, res){
     var id = parseInt(req.params.id), email = req.body.data.email;
@@ -251,7 +190,6 @@ app.delete('/messages/:id', function(req, res){
         messages.deleteMessage(id);
         app.relaseMessages('remove', id);
 
-        // app.relaseStats();
         console.log('delete '+ req.params.id);
         app.success({id: req.params.id},res);
     }else{
@@ -302,26 +240,7 @@ app.use(function(req, res){
 });
 
 
-// app.get('*', function(req, res){
-//     console.log('get unknown', req.url);
-// });
-// app.post('*', function(req, res){
-//     console.log('post req unknown', req.url);
-// });
-// app.delete('*', function(req, res){
-//     console.log('delete req unknown', req.url);
-// });
 app.listen(process.env.PORT || babble.port, function(){
     console.log(new Date() + 'listening on port '+ babble.port  + '...');
-// console.log(app._router.stack);
 
 });
-// setInterval(function(){
-//     for(sender in babble.messageRequests) {
-//         if(babble.messageRequests[sender] == -1 || babble.messageRequests[sender] == undefined)
-//             if(babble.statsRequests[sender] == -1 || babble.statsRequests[sender] == undefined){
-//                 babble.removeClient(sender);
-//                 app.relaseStats();
-//             }
-//     }
-// },babble.cleaningInterval);

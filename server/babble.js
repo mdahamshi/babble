@@ -60,6 +60,7 @@ module.exports = {
     removeStatsRes(id){
         for(var i = 0; i < this.statsRequests.length; i++)
             if(this.statsRequests[i] && this.statsRequests[i].req.id === id){
+                this.statsRequests[i].end()
                 this.statsRequests.splice(i,1);
                 console.log('removed closed stats req ',id);
                 return;
