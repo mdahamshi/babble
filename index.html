@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="styles/main.css">
+    <title>Vegans - Babble</title>
+    
+</head>
+<body>
+    
+        <header id="bab-mainHeader" class="bab-MainHeader">
+            <img class="bab-MainHeader-img" src="./images/logo.png" aria-label="babble chat logo" alt="babble chat logo">
+            <h1 class="bab-u-semiHidden">Babble Talk freely.</h1>
+        </header>
+        <nav class="bab-Nav">
+
+        </nav>
+        <main id="bab-main" class="bab-Main">
+            <div id="bab-infoBar" aria-label="information" class="bab-InfoBar bab-u-hidden">
+                <span id="bab-infobar-head" class="bab-InfoBar-header"> </span>
+                <span id="bab-infobar-text"></span>
+            </div>
+            <header id="bab-main-header" class="bab-Main-header">
+                <h1 class="bab-Main-header-h1">Vegans</h1>
+
+                <dl class="bab-Main-header-dl">
+                    <dt class="bab-Tooltip bab-Main-header-dl-dt"><img src="images/msg.png" alt="Number Of Messages"><span class="bab-Tooltiptext">Number of Messages</span></dt>
+                    <dd id="bab-messageCount" class="bab-Main-header-dl-dd">0</dd>
+
+                    <dt class="bab-Tooltip bab-Main-header-dl-dt"><img src="images/users.png" alt="Number Of Users" ><span class="bab-Tooltiptext">Number of connected users</span></dt>
+                    <dd id="bab-userCount" class="bab-Main-header-dl-dd">0</dd>
+
+                </dl>
+            </header>
+            <div id="bab-messagesSection" class="bab-MessagesSection bab-u-style-4">
+                <ol id="bab-messageList" class="bab-MessagesSection-ol">
+                       
+                </ol>
+            </div>
+            <div id="bab-sendMessage" class="bab-SendMessage">
+                <form action="#" class="bab-SendMessage-form ">
+                    <div class="bab-Growable js-growable">
+                         <pre class="bab-Growable-pre"><span id="bab-sendMessage-span" ></span><br></pre>
+                         <textarea name="newMessage" tabindex="9999" autofocus aria-label="type a message" placeholder="Babble a message !" id="bab-sendMessage-textarea" cols="30" rows="1" class="bab-SendMessage-form-textarea bab-Growable-textarea"></textarea>
+                    </div>
+                    <button id="bab-sendMessageButton" disabled tabindex="10000" class="bab-Tooltip bab-SendMessage-form-button" aria-label="Send Button" type="button" onclick="Babble.sendMessage()">
+                        <img src="images/send.png" alt="Send Button" class="bab-SendMessage-form-button-img">
+                        <span class="bab-Tooltiptext">Click to send the message</span>
+                    </button>
+                </form>
+            </div>
+
+
+        </main>
+
+        <div id="bab-modal-overlay" class="bab-u-overlay bab-u-hidden"></div>
+        <div class="bab-Modal bab-u-hidden" id="bab-modal">
+                <header class="bab-Modal-header"> Who are you?</header>
+            <form id="bab-registerForm" class="bab-Modal-form" action="#" method="POST" autocomplete="on">
+               
+                <label for="modal-name" class="bab-Modal-nameMargin bab-Modal-label">Full name: </label>
+                <input id="modal-name" name="modalName" class="bab-u-roundBorder bab-Modal-input" type="text" />
+               
+                <span class="bab-u-wrap"></span>
+               
+                <label for="modal-email" class="bab-Modal-emailMargin bab-Modal-label">Email: </label>
+                <input id="modal-email" name="modalEmail" class="bab-u-roundBorder bab-Modal-input" type="email" />
+
+                <span class="bab-u-wrap"></span>
+
+                <div class="bab-Modal-buttons">
+                    <button class="bab-Modal-cancel bab-u-flatButton"  type="button" onclick="Babble.register()">Stay Anonymous</button>
+                    <button  id="bab-modal-submit" class="bab-Modal-submit bab-u-flatButton" type="button" onclick="Babble.register({name:Babble.$('#modal-name').value, email:Babble.$('#modal-email').value })">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="bab-Loading" id="bab-loading">
+            <img src="images/loading.gif" class="bab-Loading-img" alt="loading the app"/>
+        </div>
+        <style>
+        @import url(https://fonts.googleapis.com/css?family=Nunito);@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+        </style>
+        <script src="scripts/main.min.js"></script>        
+        <script src="scripts/window.js"></script>     
+</body>
+</html>
