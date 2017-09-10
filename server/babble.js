@@ -2,9 +2,10 @@ module.exports = {
     messages: [],
     urls: {
         messages: '/messages',
+        delMessage: '/messages/:id',
         stats: '/stats',
         signin: '/user',
-        logout: '/logout',
+        logout: '/logout/:id',
         getMessages: '/messages?counter=',
         anonymousImage: 'images/null.png',
         imageUrl: 'https://www.gravatar.com/avatar/'

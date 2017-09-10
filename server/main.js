@@ -6,8 +6,24 @@ var fs = require('fs');
 var app = express();
 var parent = __dirname.split('server')[0];
 var bodyParser = require("body-parser");
+var minify = require('express-minify');
+
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(minify(
+    {
+        cache: false,
+        uglifyJsModule: null,
+        errorHandler: null,
+        jsMatch: /js/,
+        cssMatch: /css/,
+        jsonMatch: /json/,
+        sassMatch: /scss/,
+        lessMatch: /less/,
+        stylusMatch: /stylus/,
+        coffeeScriptMatch: /coffeescript/,
+      }
+));
 
 app.success = function (data, res)  {
     if(! res.writeHead)
@@ -126,7 +142,7 @@ app.get('/', function (req, res) {
 });
 
 
-app.get('//messages', function(req, res){
+app.get(babble.urls.messages, function(req, res){
     var counter = req.query.counter;
     req.id = babble.reqId++;
     
@@ -150,7 +166,7 @@ app.get('//messages', function(req, res){
 
 });
 
-app.post('//user', function(req, res){
+app.post(babble.urls.signin, function(req, res){
     if(req.body.data && (req.body.data.email != undefined)){
         var sentByme = babble.getMessagesByMe(req.body.data.email);
         // babble.messageRequests[babble.id] = -1;
@@ -167,7 +183,7 @@ app.post('//user', function(req, res){
     
 });
 
-app.post('//messages', function(req, res){
+app.post(babble.urls.messages, function(req, res){
     var msg = req.body;
 
     var msgId = messages.addMessage(msg, req.headers.sender);
@@ -177,7 +193,7 @@ app.post('//messages', function(req, res){
 
 
 });
-app.delete('//messages/:id', function(req, res){
+app.delete(babble.urls.delMessage, function(req, res){
     var id = parseInt(req.params.id), email = req.body.data.email;
     if(isNaN(id) || id < 0 || id > babble.messageId || id === ''){
         console.log("err bab id " + id );
@@ -197,7 +213,7 @@ app.delete('//messages/:id', function(req, res){
         res.end("The entered message id \""+ id + "\" doesn't belong to you." );
     }
 });
-app.delete('//logout/:id', function(req, res){
+app.delete(babble.urls.logout, function(req, res){
     var id = req.params.id;
 
     console.log('log out: ',id);
@@ -207,7 +223,7 @@ app.delete('//logout/:id', function(req, res){
     app.relaseStats();
     app.success("",res);
 });
-app.get('//stats', function(req, res){
+app.get(babble.urls.stats, function(req, res){
     req.id = babble.reqId++;
     var data = {
         users: babble.getUserCount(),
