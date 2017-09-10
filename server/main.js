@@ -32,9 +32,9 @@ app.all('*', function(req, res, next) {
   
     req.on('close', function(){
         if(req.id){
-            if(req.path == babble.urls.messages)
+            if(req.path == '/' + babble.urls.messages)
                 babble.removeMessageRes(req.id);
-            else if(req.path == babble.urls.stats)
+            else if(req.path == '/' + babble.urls.stats)
                 babble.removeStatsRes(req.id);
         }
         app.relaseStats();
@@ -126,7 +126,7 @@ app.get('/', function (req, res) {
 });
 
 
-app.get('/messages', function(req, res){
+app.get('//messages', function(req, res){
     var counter = req.query.counter;
     req.id = babble.reqId++;
     
@@ -150,7 +150,7 @@ app.get('/messages', function(req, res){
 
 });
 
-app.post('/user', function(req, res){
+app.post('//user', function(req, res){
     if(req.body.data && (req.body.data.email != undefined)){
         var sentByme = babble.getMessagesByMe(req.body.data.email);
         // babble.messageRequests[babble.id] = -1;
@@ -167,7 +167,7 @@ app.post('/user', function(req, res){
     
 });
 
-app.post('/messages', function(req, res){
+app.post('//messages', function(req, res){
     var msg = req.body;
 
     var msgId = messages.addMessage(msg, req.headers.sender);
@@ -177,7 +177,7 @@ app.post('/messages', function(req, res){
 
 
 });
-app.delete('/messages/:id', function(req, res){
+app.delete('//messages/:id', function(req, res){
     var id = parseInt(req.params.id), email = req.body.data.email;
     if(isNaN(id) || id < 0 || id > babble.messageId || id === ''){
         console.log("err bab id " + id );
@@ -197,7 +197,7 @@ app.delete('/messages/:id', function(req, res){
         res.end("The entered message id \""+ id + "\" doesn't belong to you." );
     }
 });
-app.delete('/logout/:id', function(req, res){
+app.delete('//logout/:id', function(req, res){
     var id = req.params.id;
 
     console.log('log out: ',id);
@@ -207,7 +207,7 @@ app.delete('/logout/:id', function(req, res){
     app.relaseStats();
     app.success("",res);
 });
-app.get('/stats', function(req, res){
+app.get('//stats', function(req, res){
     req.id = babble.reqId++;
     var data = {
         users: babble.getUserCount(),
