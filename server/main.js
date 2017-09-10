@@ -6,25 +6,12 @@ var fs = require('fs');
 var app = express();
 var parent = __dirname.split('server')[0];
 var bodyParser = require("body-parser");
-var minify = require('express-minify');
+const compression = require("compression");
 
 // app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(minify(
-    {
-        cache: false,
-        uglifyJsModule: null,
-        errorHandler: null,
-        jsMatch: /js/,
-        cssMatch: /css/,
-        jsonMatch: /json/,
-        sassMatch: /scss/,
-        lessMatch: /less/,
-        stylusMatch: /stylus/,
-        coffeeScriptMatch: /coffeescript/,
-      }
-));
+app.use(compression());
 
+app.use(bodyParser.json());
 app.success = function (data, res)  {
     if(! res.writeHead)
         return;
@@ -48,9 +35,9 @@ app.all('*', function(req, res, next) {
   
     req.on('close', function(){
         if(req.id){
-            if(req.path == '/' + babble.urls.messages)
+            if(req.path == babble.urls.messages)
                 babble.removeMessageRes(req.id);
-            else if(req.path == '/' + babble.urls.stats)
+            else if(req.path ==  babble.urls.stats)
                 babble.removeStatsRes(req.id);
         }
         app.relaseStats();

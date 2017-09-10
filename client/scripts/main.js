@@ -30,7 +30,7 @@ window.Babble = {
     currentMessage: "",
     counter: 0,
     timeout: 120000,
-    apiUrl: "/babble",
+    apiUrl: "",
     lastSentMessage: null,
     showingInfo: false,
     alert: {
