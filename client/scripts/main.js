@@ -30,7 +30,7 @@ window.Babble = {
     currentMessage: "",
     counter: 0,
     timeout: 120000,
-    apiUrl: "babble",
+    apiUrl: "/babble",
     lastSentMessage: null,
     showingInfo: false,
     alert: {
@@ -262,7 +262,7 @@ window.Babble = {
                 else
                     data = JSON.stringify({data:options.data});
             }
-            xhr.open(options.method, this.testing ? this.apiUrl +  options.path : options.path,
+            xhr.open(options.method,  this.apiUrl +  options.path ,
                     options.async === undefined ? true : options.async);
             if(options.async !== false)
                 xhr.timeout = options.timeout ||  this.timeout;
