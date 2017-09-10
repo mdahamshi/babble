@@ -20,6 +20,5 @@ window.onresize = function(){
 window.onbeforeunload = function(){
     
     window.Babble.updateLocalStorage();
-    window.Babble.logOut();
     // return msg;
 };

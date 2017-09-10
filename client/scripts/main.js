@@ -30,7 +30,7 @@ window.Babble = {
     currentMessage: "",
     counter: 0,
     timeout: 120000,
-    apiUrl: "",
+    apiUrl: "/babble",
     lastSentMessage: null,
     showingInfo: false,
     alert: {
@@ -452,16 +452,7 @@ window.Babble = {
         else
             return hours + ':' + minutes;
     },
-    logOut(callback = this.updateLocalStorage){
-        if(! this.id)
-            return;
-        this.sendRequest({
-            method: 'DELETE',
-            path: this.urls.logout +  '/' + this.id,
-            async: false
-        },callback.bind(this));
 
-    },
     appendMessage(message, id){
         //extracting data from message
         var name = message.name || 'Anonymous',

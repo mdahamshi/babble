@@ -52,11 +52,7 @@ module.exports = {
     getMessagesResLength(){
         return this.messageRequests.length;
     },
-    removeClient(id){
 
-        this.removeMessageRes(id);
-        this.removeStatsRes(id);        
-    },
     //closed request most likely the oldest, so we start from the begining
     removeStatsRes(id){
         for(var i = 0; i < this.statsRequests.length; i++)

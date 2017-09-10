@@ -200,16 +200,7 @@ app.delete(babble.urls.delMessage, function(req, res){
         res.end("The entered message id \""+ id + "\" doesn't belong to you." );
     }
 });
-app.delete(babble.urls.logout, function(req, res){
-    var id = req.params.id;
 
-    console.log('log out: ',id);
-    
-
-    babble.removeClient(id);
-    app.relaseStats();
-    app.success("",res);
-});
 app.get(babble.urls.stats, function(req, res){
     req.id = babble.reqId++;
     var data = {
