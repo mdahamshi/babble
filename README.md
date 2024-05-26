@@ -1,5 +1,5 @@
 # Babble
-<a href="https://goo.gl/2kW347">Babble</a> is a Simple Chat app.
+<a href="https://babble.sliplane.app/">Babble</a> is a Simple Chat app.
 <p align="center">
 <img src="https://github.com/mdahamshi/babble/blob/master/ss/0.png"/>
 </p>
@@ -24,7 +24,7 @@ Mr. Serge Krul <a href="https://il.linkedin.com/in/sergekrul">*</a>
 <img src="https://github.com/mdahamshi/babble/blob/master/ss/2.png"/>
 </p>
 <p align="center">
-<a  href="https://goo.gl/2kW347" target="_blank">
+<a  href="https://babble.sliplane.app/" target="_blank">
 <img alt="visit the app" width="100" src="https://github.com/mdahamshi/data-visualization/blob/master/screenshots/go.png"/>
 </a>
 </p>
