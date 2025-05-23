@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
+    "debug": "^4.4.1",
     "express": "^4.15.4",
     "http-server": "^14.1.1",
     "md5": "^2.2.1"
