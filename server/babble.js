@@ -106,7 +106,7 @@ module.exports = {
         if (fs.existsSync(MESSAGES_FILE)) {
             const data = fs.readFileSync(MESSAGES_FILE, 'utf8');
             try {
-                this.messages = JSON.parse(data).messages;
+                this.messages = JSON.parse(data);
                 // Ensure messageId continues from last message
                 this.messageId = this.messages.length
                     ? this.messages[this.messages.length - 1].id + 1

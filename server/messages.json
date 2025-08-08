@@ -1,5 +1,5 @@
-{
-  "messages": [
+
+  [
     {
       "name": "Mohammad Da",
       "email": "mohammad.dahamshi@gmail.com",
@@ -57,6 +57,5 @@
       "sender": "8",
       "image": "https://www.gravatar.com/avatar/6e2422d9c9b5f7323a66d996a99c6b96?s=36&d=identicon"
     }
-  ],
-  "counter": 7
-}
+  ]
+
