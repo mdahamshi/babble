@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = path.join(__dirname, '../data');
 
 const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
 
