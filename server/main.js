@@ -1,6 +1,7 @@
 
 var messages = require('./messages-util');
 var babble = require('./babble');
+babble.loadMessages();
 var express = require('express');
 var fs = require('fs');
 var app = express();

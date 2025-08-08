@@ -1,16 +1,17 @@
 FROM node:current-alpine
 LABEL maintainer="mohammad.dahamshi@gmail.com"
 
-
+# Install dependencies
 COPY package.json /tmp/package.json
 RUN cd /tmp && npm install
 RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
-# From here we load our application's code in, therefore the previous docker
-# "layer" thats been cached will be used if possible
+# Copy source code
 WORKDIR /opt/app
 COPY . /opt/app
 
-EXPOSE 3000
+# Create a volume mount point for data
+VOLUME ["/opt/app/data"]
 
+# Default start command
 CMD ["npm", "start"]
