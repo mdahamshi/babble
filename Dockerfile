@@ -16,7 +16,7 @@ COPY . /opt/app
 VOLUME ["/opt/app/data"]
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=30s \
-  CMD wget -qO- http://127.0.0.1:3000/ || exit 1
+  CMD wget -qO- http://127.0.0.1:9000/ || exit 1
 
 # Default start command
 CMD ["npm", "start"]
