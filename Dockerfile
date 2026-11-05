@@ -1,5 +1,7 @@
 FROM node:current-alpine
 LABEL maintainer="mohammad.dahamshi@gmail.com"
+LABEL org.opencontainers.image.title="Babble"
+LABEL org.opencontainers.image.description="Babble is free chat app"
 
 # Install dependencies
 COPY package.json /tmp/package.json
